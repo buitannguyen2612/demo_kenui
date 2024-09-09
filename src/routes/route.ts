@@ -5,6 +5,7 @@ import PublicLayout from "../protectedLayout/PublicLayout"
 import PrivateLayout from "../protectedLayout/PrivateLayout"
 import Register from "../pages/register/page"
 import { todoActions } from "../mobX/store"
+import TryingKendoUI from "../TryingKendoUI"
 
 // interface IICRoute{
 //     path:string
@@ -24,13 +25,18 @@ export const routes =  [
         layout:PublicLayout
     },
     {
-        path:'/todo/register',
+        path:'/',
         component:Register,
         layout:PublicLayout
     },
     {
         path:'/todo/testparam/:slug',
         component:Register,
+        layout:PublicLayout
+    },
+    {
+        path:'/todo/kenui',
+        component:TryingKendoUI,
         layout:PublicLayout
     },
 ]
