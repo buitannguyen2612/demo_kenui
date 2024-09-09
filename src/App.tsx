@@ -1,24 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect } from "react";
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import { routes } from "./routes/route";
 
 function App() {
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="w-full h-auto min-h-screen flex justify-center bg-gradient-to-r from-[#6a85b6] to-[#bac8e0]">
+      <section className="w-[80rem] h-auto ">
+        <BrowserRouter>
+          <Routes>
+            {
+              routes.map((val, index) => {
+                const Layout = val.layout
+                const Page = val.component
+                return (
+                  < Route key={index}
+                    path={val.path}
+                    element={<Layout >
+                      <Page />
+                    </Layout>}
+                  />
+                )
+              })
+            }
+          </Routes>
+        </BrowserRouter>
+      </section>
     </div>
   );
 }
