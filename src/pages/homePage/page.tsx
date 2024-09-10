@@ -49,7 +49,7 @@ const HomePage = observer((props: Props) => {
                 theme: "light",
                 transition: Bounce,
             });
-            return
+            return  
         }
     }
 

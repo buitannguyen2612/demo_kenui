@@ -7,15 +7,16 @@ type Props = {
 
 const PublicLayout = (props: Props) => {
 
-    // demo for useRoutMatch
-    const match = useMatch('/todo/login')
-    useEffect(() => {
-        console.log('this is for testing useMatch', match);
-    }, [match])
-
+    //* demo for useRoutMatch
+    const isRegisterPage = useMatch('/')
+    const isHomePage = useMatch('/todo/homepage')
+    const isLoginPage = useMatch('/todo/login')
+    // todo: using routematch for checking the current route and showing what they need to showss
 
 
     return (
+        // todo: Using grid layout of kendoUI for styling the header
+        // todo: creating header component
         <div>{props.children}</div>
     )
 }
