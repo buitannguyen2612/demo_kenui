@@ -1,4 +1,5 @@
-import '@progress/kendo-theme-default/dist/all.css';
+// import '@progress/kendo-theme-default/dist/all.css';
+import "./App.scss"
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { routes } from "./routes/route";
 

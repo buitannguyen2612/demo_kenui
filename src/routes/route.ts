@@ -1,10 +1,8 @@
-import { ReactElement } from "react"
 import HomePage from "../pages/homePage/page"
 import Login from "../pages/login/page"
-import PublicLayout from "../protectedLayout/PublicLayout"
-import PrivateLayout from "../protectedLayout/PrivateLayout"
 import Register from "../pages/register/page"
-import { todoActions } from "../mobX/store"
+import PrivateLayout from "../protectedLayout/PrivateLayout"
+import PublicLayout from "../protectedLayout/PublicLayout"
 import TryingKendoUI from "../TryingKendoUI"
 
 // interface IICRoute{

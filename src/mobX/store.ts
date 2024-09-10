@@ -1,10 +1,8 @@
-import { create } from "domain";
 import { action, computed, makeAutoObservable, observable } from "mobx";
-import { stringify } from "querystring";
 import { createContext } from "react";
 import { v4 as uuidv4 } from 'uuid';
 
-// define the object when enter informations
+//* define the object when enter informations
 class Todo {
 
     id: string = uuidv4()
@@ -27,11 +25,11 @@ class Todo {
     }
 }
 
-// create user
+//* create user
 class User {
-    id: string = uuidv4()
-    username: string = ''
-    password: string = ''
+    id: string
+    username: string
+    password: string
 
     constructor(username: string, password: string) {
         makeAutoObservable(this, {
@@ -39,12 +37,13 @@ class User {
             username: observable,
             password: observable
         })
+        this.id = uuidv4()
         this.username = username
         this.password = password
     }
 }
 
-// trigger create account from user
+//* trigger create account from user
 class Account {
 
     listUser: Array<User> = []
@@ -53,36 +52,38 @@ class Account {
         makeAutoObservable(this, {
             listUser: observable,
             createAccount: action,
-            loginByAccount:action
+            loginByAccount: action,
         })
     }
 
     createAccount(username: string, password: string) {
-        const currentAccount = new User(username, password)
-        this.listUser.push(currentAccount)
+        this.listUser.push(new User(username, password))
     }
 
-    loginByAccount(username: string, password: string):boolean {
-      const isExitAccount = this.listUser.some(val => JSON.stringify(val) === JSON.stringify({username, password}))
-        return isExitAccount
+    loginByAccount(username: string, password: string): boolean {
+        return this.listUser.some(val => val.username === username && val.password === password)
     }
+    
+
+
 }
 
-// trigger adding single object of todo into the array
+//* Define current instance, and feel of method for trigger action
 class TodoStore {
 
-    // define the array with generic is Todo object
     todos: Array<Todo> = [];
 
-    // making the observable for realtime watching the state change in this class
     constructor() {
+        //* Using for define observable for wraping the state change
         makeAutoObservable(this, {
             todos: observable,
             addTodo: action,
-            completeCountingTodo: computed, //computed will be calling when state is change ==> note: its not using for change the init state
-            removeTodo: action // this is an action we want to difine in the class
-            // actions and computed is differ : actions : is define for some method is calling for change some state in class
-            //                                  computed : is define for some case not change the current state in class. Its will running when the state change 
+            completeCountingTodo: computed, 
+            removeTodo: action
+            // * there 3 atribute for define:
+            //* observable: Using for wrap the init state and watching if they change.
+            //* action: Using for define the action method, trigger to current state and change it.
+            //* computed: Define method that using for counting and not contact to init state.
         })
     }
 
@@ -120,13 +121,14 @@ class TodoStore {
 }
 
 
-// store two of the class in to one context --> this case is already dont need for using 
+//? So i see this case will work when we calling it to component by useContext hook, but its good more than case below ?
 export const TodoStoreContext = createContext(new TodoStore());
 export const authentActions = createContext(new Account())
-//--> this is the best way to do it
+//? -------------------------------------------------------------
 
 
 
 
 
 export const todoActions = new TodoStore()
+export const authenticationActions = new Account()

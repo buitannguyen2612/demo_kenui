@@ -16,7 +16,7 @@ const PublicLayout = (props: Props) => {
 
 
     return (
-        <div>{props.children} hello</div>
+        <div>{props.children}</div>
     )
 }
 
