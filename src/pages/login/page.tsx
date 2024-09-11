@@ -57,8 +57,8 @@ const Login = observer((props: Props) => {
             <Form
                 onSubmit={submitRegister}
                 render={(formRenderProps: FormRenderProps) => (
-                    <FormElement>
-                        <div className='w-full h-auto pt-[2rem] flex justify-center items-center bg-transparent'>
+                    <FormElement className='w-full h-full flex justify-center items-center'>
+                        <div className='w-auto h-auto'>
                             <div className=' min-h-[25rem] w-[25rem] flex flex-col items-center gap-[2rem] rounded-xl shadow-2xl backdrop-blur-xl bg-white/30 overflow-hidden'>
                                 <div className='w-full h-[5rem] flex justify-center items-center box-primary-gradientcolor'>
                                     <p className='w-max text-[1.6rem] font-bold text-white'>Login</p>

@@ -49,7 +49,7 @@ const HomePage = observer((props: Props) => {
                 theme: "light",
                 transition: Bounce,
             });
-            return  
+            return
         }
     }
 
@@ -81,7 +81,7 @@ const HomePage = observer((props: Props) => {
 
     return (
         <>
-            <article className='w-full h-screen flex justify-center items-center bg-transparent'>
+            <article className='w-full h-full flex justify-center items-center bg-transparent'>
                 <div className='w-[40rem] h-[30rem] flex flex-col gap-[2rem] p-[1rem] rounded-xl shadow-xl backdrop-blur-xl bg-white/30'>
                     {/* input todo */}
                     <form onSubmit={triggerAdd} className='w-full h-auto flex-shrink-0 flex flex-col gap-2'>
