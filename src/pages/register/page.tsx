@@ -162,24 +162,24 @@ const Register = observer((props: Props) => {
                                 <div className='w-full h-auto flex flex-col gap-[1rem] justify-center p-[0.5rem]'>
                                     <div className='w-full'>
                                         <FieldWrapper>
-                                                <Field
-                                                    name={"username"}
-                                                    type={"text"}
-                                                    component={UsernameInput}
-                                                    label={"UserName"}
-                                                    validator={usernameValidator}
-                                                />
+                                            <Field
+                                                name={"username"}
+                                                type={"text"}
+                                                component={UsernameInput}
+                                                label={"UserName"}
+                                                validator={usernameValidator}
+                                            />
                                         </FieldWrapper>
                                     </div>
                                     <div className='w-full'>
                                         <FieldWrapper>
-                                                <Field
-                                                    name={"password"}
-                                                    type={"text"}
-                                                    component={PasswordInput}
-                                                    label={"Password"}
-                                                    validator={passwordValidator}
-                                                />
+                                            <Field
+                                                name={"password"}
+                                                type={"text"}
+                                                component={PasswordInput}
+                                                label={"Password"}
+                                                validator={passwordValidator}
+                                            />
                                         </FieldWrapper>
                                     </div>
                                     <div className="w-full">
