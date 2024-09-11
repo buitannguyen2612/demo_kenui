@@ -12,7 +12,7 @@ function App() {
   // TODO: Adding Jestjs in this system
   return (
     <div className="w-full h-auto flex justify-center bg-gradient-to-r from-[#6a85b6] to-[#bac8e0]">
-      <section className="w-[80rem] h-auto ">
+      <section className="w-full h-auto ">
         <BrowserRouter>
           <Routes>
             {

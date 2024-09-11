@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useMatch } from 'react-router-dom';
+import Header from '../components/header/page';
 
 type Props = {
     children: React.ReactNode
@@ -15,9 +16,10 @@ const PublicLayout = (props: Props) => {
 
 
     return (
-        // todo: Using grid layout of kendoUI for styling the header
-        // todo: creating header component
-        <div>{props.children}</div>
+        <div className='w-full h-screen flex flex-col'>
+            <Header />
+            <div className='flex-1'>{props.children}</div>
+        </div >
     )
 }
 

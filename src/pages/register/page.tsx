@@ -154,7 +154,7 @@ const Register = observer((props: Props) => {
                 onSubmit={submitRegister}
                 render={(formRenderProps: FormRenderProps) => (
                     <FormElement>
-                        <section className='w-full h-svh flex justify-center items-center bg-transparent'>
+                        <section className='w-full pt-[2rem] flex justify-center items-center bg-transparent'>
                             <div className=' min-h-[30rem] w-[25rem] pb-[1rem] flex flex-col items-center gap-[2rem] rounded-xl shadow-2xl backdrop-blur-xl bg-white/30 overflow-hidden'>
                                 <div className='w-full h-[5rem] flex justify-center items-center box-primary-gradientcolor'>
                                     <p className='w-max text-[1.6rem] font-bold text-white'>Register</p>
@@ -162,24 +162,24 @@ const Register = observer((props: Props) => {
                                 <div className='w-full h-auto flex flex-col gap-[1rem] justify-center p-[0.5rem]'>
                                     <div className='w-full'>
                                         <FieldWrapper>
-                                                <Field
-                                                    name={"username"}
-                                                    type={"text"}
-                                                    component={UsernameInput}
-                                                    label={"UserName"}
-                                                    validator={usernameValidator}
-                                                />
+                                            <Field
+                                                name={"username"}
+                                                type={"text"}
+                                                component={UsernameInput}
+                                                label={"UserName"}
+                                                validator={usernameValidator}
+                                            />
                                         </FieldWrapper>
                                     </div>
                                     <div className='w-full'>
                                         <FieldWrapper>
-                                                <Field
-                                                    name={"password"}
-                                                    type={"text"}
-                                                    component={PasswordInput}
-                                                    label={"Password"}
-                                                    validator={passwordValidator}
-                                                />
+                                            <Field
+                                                name={"password"}
+                                                type={"text"}
+                                                component={PasswordInput}
+                                                label={"Password"}
+                                                validator={passwordValidator}
+                                            />
                                         </FieldWrapper>
                                     </div>
                                     <div className="w-full">
