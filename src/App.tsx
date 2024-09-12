@@ -9,8 +9,8 @@ function App() {
   // TODO: Adding Jestjs in this system
   // TODO: Adding some library in your case error of datagrid layout
   // TODO: Trying to setup the enviroment in the jestjs
-  //? We have to using babel for that?
-  //? Do we need to using ts in this case?
+  //? We have to using babel for that? no dont need
+  //? Do we need to using ts in this case? preset: ts-jest
   //? With CRA project do we need to install the jestjs CLI in this case?
   // TODO: Trying to adding 2-3 jest test in this project 
   return (

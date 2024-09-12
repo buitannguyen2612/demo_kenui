@@ -37,6 +37,7 @@ class User {
             username: observable,
             password: observable
         })
+        
         this.id = uuidv4()
         this.username = username
         this.password = password
@@ -51,19 +52,20 @@ class Account {
     constructor() {
         makeAutoObservable(this, {
             listUser: observable,
-            createAccount: action,
+            createAccount: action, //? This still working if adding observable
             loginByAccount: action,
         })
     }
 
     createAccount(username: string, password: string) {
+        console.log('Is running');
+        
         this.listUser.push(new User(username, password))
     }
 
     loginByAccount(username: string, password: string): boolean {
         return this.listUser.some(val => val.username === username && val.password === password)
     }
-    
 
 
 }

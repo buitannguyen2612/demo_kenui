@@ -188,7 +188,7 @@ const DataTable = (props: Props) => {
         collapsedIds: [],
     });
 
-    //* this function will calling after we select all of row 
+    //* this function will calling after we select all of row
     const onHeaderSelectionChange = React.useCallback(
         (event: GridHeaderSelectionChangeEvent) => {
             console.log('select all of row');
@@ -547,3 +547,4 @@ const DataTable = (props: Props) => {
 }
 
 export default DataTable
+

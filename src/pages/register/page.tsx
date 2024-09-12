@@ -87,6 +87,7 @@ const Register = observer((props: Props) => {
     //* Get the context named authentActions in store.mobx
     const registerAction = useContext(authentActions)
 
+
     const navigate = useNavigate()
 
     //*Check if includes user in system
@@ -101,40 +102,9 @@ const Register = observer((props: Props) => {
         const userName: string = dataItem.username
         const password: string = dataItem.password
 
-        try {
-            if (isContainAccount(userName, password)) {
-                toast.error('🦄 Use another account!!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Bounce,
-                });
-                return
-            }
-            else {
-                registerAction.createAccount(userName, password)
-                toast.success('🦄 Register successful!!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Bounce,
-                });
-                navigate("/todo/login");
-            }
 
-        } catch (error) {
-            console.log(error);
-            toast.error('🦄 Register fail!!', {
+        if (isContainAccount(userName, password)) {
+            toast.error('🦄 Use another account!!', {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -146,6 +116,22 @@ const Register = observer((props: Props) => {
                 transition: Bounce,
             });
         }
+        else {
+            registerAction.createAccount(userName, password)
+            toast.success('🦄 Register successful!!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+            navigate("/todo/login");
+        }
+
     }
 
     return (

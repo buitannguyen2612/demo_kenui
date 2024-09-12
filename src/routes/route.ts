@@ -1,4 +1,3 @@
-import DataTable from "../pages/gridLayout/page"
 import HomePage from "../pages/homePage/page"
 import Login from "../pages/login/page"
 import Register from "../pages/register/page"
@@ -22,11 +21,11 @@ export const routes = [
         component: Login,
         layout: PublicLayout
     },
-    {
-        path: '/todo/grid',
-        component: DataTable,
-        layout: PrivateLayout
-    },
+    // {
+    //     path: '/todo/grid',
+    //     component: DataTable,
+    //     layout: PrivateLayout
+    // },
     {
         path: '/',
         component: Register,
