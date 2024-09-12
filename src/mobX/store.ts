@@ -15,6 +15,7 @@ class Todo {
             title: observable,
             complete: observable,
             toggleComplete: action
+
         })
 
         this.title = title
@@ -37,7 +38,7 @@ class User {
             username: observable,
             password: observable
         })
-        
+
         this.id = uuidv4()
         this.username = username
         this.password = password
@@ -46,28 +47,24 @@ class User {
 
 //* trigger create account from user
 class Account {
-
     listUser: Array<User> = []
 
     constructor() {
         makeAutoObservable(this, {
             listUser: observable,
-            createAccount: action, //? This still working if adding observable
+            createAccount: action,
             loginByAccount: action,
         })
     }
 
     createAccount(username: string, password: string) {
         console.log('Is running');
-        
         this.listUser.push(new User(username, password))
     }
 
     loginByAccount(username: string, password: string): boolean {
         return this.listUser.some(val => val.username === username && val.password === password)
     }
-
-
 }
 
 //* Define current instance, and feel of method for trigger action
@@ -80,7 +77,7 @@ class TodoStore {
         makeAutoObservable(this, {
             todos: observable,
             addTodo: action,
-            completeCountingTodo: computed, 
+            completeCountingTodo: computed,
             removeTodo: action
             // * there 3 atribute for define:
             //* observable: Using for wrap the init state and watching if they change.

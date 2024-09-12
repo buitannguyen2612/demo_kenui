@@ -7,13 +7,12 @@ import {
     FormElement,
     FormRenderProps
 } from "@progress/kendo-react-form";
-import { Input, TextBox } from "@progress/kendo-react-inputs";
+import { Input } from "@progress/kendo-react-inputs";
 import { Error } from "@progress/kendo-react-labels";
 import { observer } from "mobx-react-lite";
-import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
-import { authentActions } from '../../mobX/store';
+import { authenticationActions } from '../../mobX/store';
 import styles from './page.module.css';
 
 type Props = {}
@@ -83,12 +82,13 @@ const EmailInput = (fieldRenderProps: FieldRenderProps) => {
 
 
 
-const Register = observer((props: Props) => {
-    //* Get the context named authentActions in store.mobx
-    const registerAction = useContext(authentActions)
 
+const Register = observer((props: Props) => {
 
     const navigate = useNavigate()
+
+    //* Get the context named authentActions in store.mobx
+    const registerAction = authenticationActions
 
     //*Check if includes user in system
     const isContainAccount = (username: string, password: string) => {
@@ -180,7 +180,7 @@ const Register = observer((props: Props) => {
                                         </FieldWrapper>
                                     </div>
                                     <div className="w-full flex justify-center">
-                                        <Button className={`w-[50%] ${styles.submitButton}`} disabled={!formRenderProps.allowSubmit}>Register</Button>
+                                        <Button data-testid="btn_trigger" className={`w-[50%] ${styles.submitButton}`} disabled={!formRenderProps.allowSubmit}>Register</Button>
                                     </div>
                                 </div>
                                 <div className="w-full flex justify-center items-center gap-2">

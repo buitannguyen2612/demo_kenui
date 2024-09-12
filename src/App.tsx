@@ -4,17 +4,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { routes } from "./routes/route";
 
 function App() {
-
-
-  // TODO: Adding Jestjs in this system
-  // TODO: Adding some library in your case error of datagrid layout
-  // TODO: Trying to setup the enviroment in the jestjs
-  //? We have to using babel for that? no dont need
-  //? Do we need to using ts in this case? preset: ts-jest
-  //? With CRA project do we need to install the jestjs CLI in this case?
-  // TODO: Trying to adding 2-3 jest test in this project 
   return (
-    <div className="w-full h-auto flex justify-center bg-gradient-to-r from-[#6a85b6] to-[#bac8e0]">
+    <div data-testid="container" className="w-full h-auto flex justify-center bg-gradient-to-r from-[#6a85b6] to-[#bac8e0]">
       <section className="w-full h-auto ">
         <BrowserRouter>
           <Routes>
