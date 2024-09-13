@@ -28,11 +28,6 @@ jest.mock('../routes/route', () => ({
             component: (prop: any) => 'register',
             layout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
         },
-        {
-            path: '/todo/testparam/:slug',
-            component: (prop: any) => 'register',
-            layout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-        },
     ],
 }));
 

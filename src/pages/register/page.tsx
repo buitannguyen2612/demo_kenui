@@ -60,10 +60,6 @@ const UsernameInput = (fieldRenderProps: FieldRenderProps) => {
 }
 
 
-
-
-
-
 //*Func check valid mail
 const emailRegex: RegExp = new RegExp(/\S+@\S+\.\S+/);
 const emailValidator = (value: string) =>
@@ -101,10 +97,11 @@ const Register = observer((props: Props) => {
     }) => {
         const userName: string = dataItem.username
         const password: string = dataItem.password
+        console.log(userName, password);
 
 
         if (isContainAccount(userName, password)) {
-            toast.error('🦄 Use another account!!', {
+            toast.error('Use another account!!', {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -118,7 +115,7 @@ const Register = observer((props: Props) => {
         }
         else {
             registerAction.createAccount(userName, password)
-            toast.success('🦄 Register successful!!', {
+            toast.success('Register successful!!', {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -140,7 +137,7 @@ const Register = observer((props: Props) => {
                 onSubmit={submitRegister}
                 render={(formRenderProps: FormRenderProps) => (
                     <FormElement className="w-full h-full flex justify-center items-center">
-                        <section className='h-auto w-auto'>
+                        <section data-testid="register-container" className='h-auto w-auto'>
                             <div className=' min-h-[30rem] w-[25rem] pb-[1rem] flex flex-col items-center gap-[2rem] rounded-xl shadow-2xl backdrop-blur-xl bg-white/30 overflow-hidden'>
                                 <div className='w-full h-[5rem] flex justify-center items-center box-primary-gradientcolor'>
                                     <p className='w-max text-[1.6rem] font-bold text-white'>Register</p>
@@ -168,7 +165,7 @@ const Register = observer((props: Props) => {
                                             />
                                         </FieldWrapper>
                                     </div>
-                                    <div className="w-full">
+                                    {/* <div className="w-full">
                                         <FieldWrapper>
                                             <Field
                                                 name={"email"}
@@ -178,7 +175,7 @@ const Register = observer((props: Props) => {
                                                 validator={emailValidator}
                                             />
                                         </FieldWrapper>
-                                    </div>
+                                    </div> */}
                                     <div className="w-full flex justify-center">
                                         <Button data-testid="btn_trigger" className={`w-[50%] ${styles.submitButton}`} disabled={!formRenderProps.allowSubmit}>Register</Button>
                                     </div>

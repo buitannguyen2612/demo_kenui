@@ -32,9 +32,5 @@ export const routes = [
         component: Register,
         layout: PublicLayout
     },
-    {
-        path: '/todo/testparam/:slug',
-        component: Register,
-        layout: PublicLayout
-    },
+
 ]

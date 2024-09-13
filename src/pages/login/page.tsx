@@ -2,17 +2,16 @@ import { Button } from '@progress/kendo-react-buttons';
 import { Field, FieldWrapper, Form, FormElement, FormRenderProps } from '@progress/kendo-react-form';
 import { Input } from '@progress/kendo-react-inputs';
 import { observer } from 'mobx-react-lite';
-import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Bounce, toast } from 'react-toastify';
-import { authentActions } from '../../mobX/store';
+import { authenticationActions } from '../../mobX/store';
 import styles from './page.module.css';
 
 type Props = {}
 
 const Login = observer((props: Props) => {
     //*Define the store by using context 
-    const loginAction = useContext(authentActions)
+    const loginAction = authenticationActions
     const navigate = useNavigate()
 
 
@@ -47,7 +46,7 @@ const Login = observer((props: Props) => {
                 theme: "light",
                 transition: Bounce,
             });
-            console.log('This is all of user in mobx', loginAction.listUser);
+
         }
     }
 
@@ -61,7 +60,7 @@ const Login = observer((props: Props) => {
                         <div className='w-auto h-auto'>
                             <div className=' min-h-[25rem] w-[25rem] flex flex-col items-center gap-[2rem] rounded-xl shadow-2xl backdrop-blur-xl bg-white/30 overflow-hidden'>
                                 <div className='w-full h-[5rem] flex justify-center items-center box-primary-gradientcolor'>
-                                    <p className='w-max text-[1.6rem] font-bold text-white'>Login</p>
+                                    <p data-testid="login-title" className='w-max text-[1.6rem] font-bold text-white'>Login</p>
                                 </div>
                                 <div className='w-full h-auto flex flex-col gap-[2rem] justify-center p-[0.5rem]'>
                                     <div className='w-full'>
@@ -87,7 +86,7 @@ const Login = observer((props: Props) => {
                                         </FieldWrapper>
                                     </div>
                                     <div className='w-full flex justify-center'>
-                                        <Button className={`w-[50%] ${styles.submitButton}`} disabled={!formRenderProps.allowSubmit}>Login</Button>
+                                        <Button data-testid="btn-login" className={`w-[50%] ${styles.submitButton}`} disabled={!formRenderProps.allowSubmit}>Login</Button>
                                     </div>
                                 </div>
                                 <div className="w-full flex justify-center items-center gap-2">

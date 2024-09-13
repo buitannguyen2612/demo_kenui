@@ -1,73 +1,74 @@
+import '@testing-library/jest-dom';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
-import Register from "../pages/register/page";
+import { BrowserRouter as Router } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import { authenticationActions } from '../mobX/store';
+import Register from '../pages/register/page';
 
-
-// this callback will clean after each test case
 afterEach(() => {
     cleanup()
 })
 
-// Mock the useContext hook to return a mock implementation of authentActions
-jest.mock('react', () => ({
-    ...jest.requireActual('react'),
-    useContext: () => ({
-        listUser: [],
-        createAccount: jest.fn(),
-    }),
+jest.mock('react-toastify', () => ({
+    toast: {
+        error: jest.fn(),
+        success: jest.fn(),
+    },
+    ToastContainer: jest.fn(() => null),
 }));
 
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockNavigate,
+}));
+
+jest.mock('../mobX/store', () => ({
+    authenticationActions: {
+        createAccount: jest.fn(),
+    },
+}));
+
+const renderComponent = () => {
+    return render(
+        <Router>
+            <ToastContainer />
+            <Register />
+        </Router>
+    );
+};
+
+
 describe('Register Component', () => {
-    test('renders Register component', () => {
-        render(
-            <MemoryRouter>
-                <Register />
-            </MemoryRouter>
-        );
-        expect(screen.getByText('Register')).toBeInTheDocument();
+    it('renders the Register component', () => {
+        renderComponent();
+        expect(screen.getByTestId('register-container')).toBeInTheDocument();
     });
 
-    test('validates username, password, and email fields', () => {
-        render(
-            <MemoryRouter>
-                <Register />
-            </MemoryRouter>
-        );
+    it('Calling to store when register', () => {
+        renderComponent();
+
+        fireEvent.change(screen.getByLabelText('UserName'), { target: { value: 'newuser' } });
+        fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'newpassword' } });
+        fireEvent.click(screen.getByTestId('btn_trigger'));
+        expect(authenticationActions.createAccount).toHaveBeenCalledWith('testuser', 'password');
+    });
+
+    it('shows validation error for invalid username', () => {
+        renderComponent();
 
         fireEvent.change(screen.getByLabelText('UserName'), { target: { value: 'Invalid@User' } });
         fireEvent.blur(screen.getByLabelText('UserName'));
+
         expect(screen.getByText('UserName must not contain in special character and uppercase letter')).toBeInTheDocument();
-
-        fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'short' } });
-        fireEvent.blur(screen.getByLabelText('Password'));
-        expect(screen.getByText('Password must contain in 2-10 character')).toBeInTheDocument();
-
-        fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'invalidemail' } });
-        fireEvent.blur(screen.getByLabelText('Email'));
-        expect(screen.getByText('Please enter a valid email.')).toBeInTheDocument();
     });
 
-    test('submits the form with valid data', () => {
-        const mockCreateAccount = jest.fn();
-        jest.spyOn(React, 'useContext').mockReturnValue({
-            listUser: [],
-            createAccount: mockCreateAccount,
-        });
+    it('shows validation error for invalid password', () => {
+        renderComponent();
 
-        render(
-            <MemoryRouter>
-                <Register />
-            </MemoryRouter>
-        );
+        fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'p' } });
+        fireEvent.blur(screen.getByLabelText('Password'));
 
-        fireEvent.change(screen.getByLabelText('UserName'), { target: { value: 'ValidUser' } });
-        fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'validpass' } });
-        fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'valid@example.com' } });
-
-        fireEvent.click(screen.getByTestId('btn_trigger'));
-
-        expect(mockCreateAccount).toHaveBeenCalledWith('ValidUser', 'validpass');
-        expect(screen.getByText('🦄 Register successful!!')).toBeInTheDocument();
+        expect(screen.getByText('Password must contain in 2-10 character')).toBeInTheDocument();
     });
 });

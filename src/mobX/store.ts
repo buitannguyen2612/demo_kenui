@@ -58,7 +58,6 @@ class Account {
     }
 
     createAccount(username: string, password: string) {
-        console.log('Is running');
         this.listUser.push(new User(username, password))
     }
 
