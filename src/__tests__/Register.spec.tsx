@@ -65,10 +65,15 @@ describe('Register Component', () => {
 
     it('shows validation error for invalid password', () => {
         renderComponent();
-
-        fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'p' } });
-        fireEvent.blur(screen.getByLabelText('Password'));
-
+        fireEvent.change(screen.getByTestId('passwordInput'), { target: { value: 'p' } });
         expect(screen.getByText('Password must contain in 2-10 character')).toBeInTheDocument();
+    });
+
+    it('shows validation error for invalid confirm password', () => {
+        renderComponent();
+        fireEvent.change(screen.getByTestId('passwordInput'), { target: { value: 'password1' } });
+        fireEvent.change(screen.getByTestId('confirmPassword'), { target: { value: 'password' } });
+
+        expect(screen.getByText('Confirm password must be same to current password')).toBeInTheDocument();
     });
 });

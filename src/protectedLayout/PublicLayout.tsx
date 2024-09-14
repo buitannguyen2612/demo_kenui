@@ -8,7 +8,7 @@ type Props = {
 const PublicLayout = (props: Props) => {
     return (
         <div className='w-full h-screen flex flex-col'>
-            <Header />
+            {/* <Header /> */}
             <div className='flex-1'>{props.children}</div>
         </div >
     )

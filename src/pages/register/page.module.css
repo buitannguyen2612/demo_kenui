@@ -1,4 +1,10 @@
-.submitButton{
+.form_register {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.submitButton {
     background-color: #97baf5;
     border: none;
     outline: none;
@@ -8,8 +14,13 @@
     transition: all 0.2s ease;
 }
 
-.submitButton:hover{
+.submitButton:hover {
     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 8px 3px;
     background-color: #97baf5;
     color: white;
+}
+
+.wraper {
+    border: 1px solid #000;
+    display: flex;
 }
