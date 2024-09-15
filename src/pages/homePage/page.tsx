@@ -54,10 +54,10 @@ const HomePage = observer((props: Props) => {
     }
 
     // clean all of todo 
-    const deleteAll = (e: React.FormEvent) => {
-        e.stopPropagation()
-        store.clearAllTodo()
-    }
+    // const deleteAll = (e: React.FormEvent) => {
+    //     e.stopPropagation()
+    //     store.clearAllTodo()
+    // }
 
     // handle close popup
     const closePopup = () => {
@@ -82,20 +82,22 @@ const HomePage = observer((props: Props) => {
     return (
         <>
             <article className='w-full h-full flex justify-center items-center bg-transparent'>
-                <div className='w-[40rem] h-[30rem] flex flex-col gap-[2rem] p-[1rem] rounded-xl shadow-xl backdrop-blur-xl bg-white/30'>
+                <div className='w-[40rem] h-[30rem] flex flex-col gap-[2rem] p-[1rem] rounded-xl shadow-xl bg-[#f0f1f3]'>
                     {/* input todo */}
                     <form onSubmit={triggerAdd} className='w-full h-auto flex-shrink-0 flex flex-col gap-2'>
-                        <div className='w-full h-[2rem] rounded-xl overflow-hidden'>
-                            <input onChange={(e) => onChangeValue(e.target.value)} value={valueInput} type="text" className='w-full h-full border-none outline-none pl-[0.5rem] text-[1rem]' placeholder='Enter your todo' />
+                        <div className='w-full h-[4rem] flex rounded-xl overflow-hidden shadow-xl bg-white'>
+                            <input onChange={(e) => onChangeValue(e.target.value)} value={valueInput} type="text" className='w-[85%] h-full flex-shrink-0 border-none outline-none pl-[0.5rem] text-[1rem]' placeholder='Enter your todo' />
+                            <div className='flex-1 flex items-center'>
+                                <button type='submit' className=' btn-shape-rounded hover-effect-topleft'>ADD</button>
+                            </div>
                         </div>
-                        <div className='w-full flex gap-2 justify-start pl-[0.2rem]'>
-                            <button type='submit' className='btn-shape-rounded hover-effect-topleft'>ADD</button>
+                        {/* <div className='w-full flex gap-2 justify-start pl-[0.2rem]'>
                             <button type='button' onClick={(e) => deleteAll(e)} className='btn-shape-rounded hover-effect-topleft'>CLEAR ALL</button>
-                        </div>
+                        </div> */}
                     </form>
                     {/* input todo */}
 
-
+                    <hr className='w-full h-[2px] bg-[#a6a6a6]' />
                     {/* list todo */}
                     <div className='w-full flex-1 overflow-y-auto p-[0.2rem]'>
                         <div className='h-auto w-full flex flex-col gap-[1rem]'>

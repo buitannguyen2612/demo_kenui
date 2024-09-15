@@ -41,27 +41,24 @@ const conponentRender = () => {
 describe("Login component", () => {
     it('Component render with no crash', () => {
         conponentRender()
-        const element = screen.getByTestId('login-title')
+        const element = screen.getByTestId('login-container')
         expect(element).toBeInTheDocument()
     })
 
-    it('Login was fail with incorrect username and password', () => {
+    it("Validation username input fail", () => {
         conponentRender()
-        const btnLogin = screen.getByTestId('btn-login')
-        fireEvent.change(screen.getByLabelText('UserName'), { target: { value: "nguyenyellow" } })
-        fireEvent.change(screen.getByLabelText('Password'), { target: { value: "invalidpassword" } })
-        fireEvent.click(btnLogin)
-        expect(authenticationActions.loginByAccount).toHaveBeenCalledWith('nguyenyellow', 'invalidpassword')
-        expect(toast.error).toHaveBeenCalledWith('🦄 Login fail!!', expect.any(Object));
+        const usernameInput = screen.getByLabelText('Username:');
+        fireEvent.change(usernameInput, { target: { value: 'nguyenS@' } });
+
+        expect(screen.getByText("UserName must not contain in special character and uppercase letter")).toBeInTheDocument()
     })
 
-    it('Login success', () => {
+    it("Validation password input fail", () => {
         conponentRender()
-        const btnLogin = screen.getByTestId('btn-login')
-        fireEvent.change(screen.getByLabelText('UserName'), { target: { value: "nguyenyellow" } })
-        fireEvent.change(screen.getByLabelText('Password'), { target: { value: "validpassword" } })
-        fireEvent.click(btnLogin)
-        expect(authenticationActions.loginByAccount).toHaveBeenCalledWith('nguyenyellow', 'validpassword')
-        expect(toast.success).toHaveBeenCalledWith('🦄 Login success!!', expect.any(Object));
+        const passwordInput = screen.getByTestId('passwordInput');
+        fireEvent.change(passwordInput, { target: { value: 'nguyenS@@@@@@@@@@@@22' } });
+
+        expect(screen.getByText("Password must contain in 2-10 character")).toBeInTheDocument()
     })
+
 })

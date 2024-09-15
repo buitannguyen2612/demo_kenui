@@ -38,42 +38,66 @@ const renderComponent = () => {
     );
 };
 
-
 describe('Register Component', () => {
     it('renders the Register component', () => {
         renderComponent();
         expect(screen.getByTestId('register-container')).toBeInTheDocument();
     });
 
-    it('Calling to store when register', () => {
+    test('validates password length', () => {
         renderComponent();
-
-        fireEvent.change(screen.getByLabelText('UserName'), { target: { value: 'newuser' } });
-        fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'newpassword' } });
-        fireEvent.click(screen.getByTestId('btn_trigger'));
-        expect(authenticationActions.createAccount).toHaveBeenCalledWith('testuser', 'password');
-    });
-
-    it('shows validation error for invalid username', () => {
-        renderComponent();
-
-        fireEvent.change(screen.getByLabelText('UserName'), { target: { value: 'Invalid@User' } });
-        fireEvent.blur(screen.getByLabelText('UserName'));
-
-        expect(screen.getByText('UserName must not contain in special character and uppercase letter')).toBeInTheDocument();
-    });
-
-    it('shows validation error for invalid password', () => {
-        renderComponent();
-        fireEvent.change(screen.getByTestId('passwordInput'), { target: { value: 'p' } });
+        const passwordInput = screen.getByTestId('passwordInput');
+        fireEvent.change(passwordInput, { target: { value: 'a' } });
+        fireEvent.blur(passwordInput);
         expect(screen.getByText('Password must contain in 2-10 character')).toBeInTheDocument();
     });
 
-    it('shows validation error for invalid confirm password', () => {
+    test('validates confirm password', () => {
         renderComponent();
-        fireEvent.change(screen.getByTestId('passwordInput'), { target: { value: 'password1' } });
-        fireEvent.change(screen.getByTestId('confirmPassword'), { target: { value: 'password' } });
+        const passwordInput = screen.getByTestId('passwordInput');
+        const confirmPasswordInput = screen.getByTestId('confirmPassword');
+
+        fireEvent.change(passwordInput, { target: { value: 'password' } });
+        fireEvent.change(confirmPasswordInput, { target: { value: 'different' } });
+        fireEvent.blur(confirmPasswordInput);
 
         expect(screen.getByText('Confirm password must be same to current password')).toBeInTheDocument();
     });
+
+    test('validates email format', () => {
+        renderComponent();
+        const emailInput = screen.getByLabelText('Email:');
+        fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
+        fireEvent.blur(emailInput);
+        expect(screen.getByText('Please enter a valid email.')).toBeInTheDocument();
+    });
+
+    test('submits the form with valid data', () => {
+        renderComponent();
+
+        // Fill in the username
+        const usernameInput = screen.getByLabelText('Username:');
+        fireEvent.change(usernameInput, { target: { value: 'nguyen' } });
+
+        // Fill in the email
+        const emailInput = screen.getByLabelText('Email:');
+        fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+
+        // Fill in the password
+        const passwordInput = screen.getByTestId('passwordInput');
+        fireEvent.change(passwordInput, { target: { value: '26122001' } });
+
+        // Fill in the confirm password
+        const confirmPasswordInput = screen.getByTestId('confirmPassword');
+        fireEvent.change(confirmPasswordInput, { target: { value: '26122001' } });
+
+        // Click the submit button
+        const submitButton = screen.getByRole('button', { name: /Sign Up/i }); //* Get the button that having "Sign Up" text in that
+        fireEvent.click(submitButton);
+
+        // Check if the form was submitted (you might need to adjust this based on your implementation)
+        expect(screen.getByText('Register successful!!')).toBeInTheDocument();
+    });
+
+
 });

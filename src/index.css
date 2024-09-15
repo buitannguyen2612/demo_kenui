@@ -18,4 +18,8 @@
     .box-primary-gradientcolor {
         @apply bg-gradient-to-r from-[#6a85b6] to-[#97baf5]
     }
+
+    .main-background {
+        @apply bg-gradient-to-r from-[#6a85b6] to-[#bac8e0]
+    }
 }

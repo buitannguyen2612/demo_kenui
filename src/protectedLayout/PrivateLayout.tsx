@@ -7,7 +7,7 @@ type Props = {
 
 const PrivateLayout = (props: Props) => {
     return (
-        <div className='w-full h-screen flex flex-col'>
+        <div className='w-full h-screen flex flex-col backdrop-blur-xl '>
             <Header />
             <div className='flex-1'>{props.children}</div>
         </div >

@@ -1,4 +1,5 @@
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Button } from '@progress/kendo-react-buttons';
 import {
     Field,
@@ -13,12 +14,12 @@ import {
     FloatingLabel
 } from "@progress/kendo-react-labels";
 import { observer } from "mobx-react-lite";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 import { authenticationActions } from '../../mobX/store';
 import styles from './page.module.css'
 import { useState } from 'react';
-import backGroundRegister from '../../images/registerBackground.jpg'
+import backGroundRegister from '../../images/sndRegisterbg.jpg'
 
 type Props = {}
 
@@ -41,7 +42,8 @@ const passwordValidator = (value: string) => {
     return isValid ? '' : 'Password must contain in 2-10 character'
 }
 const PasswordInput = (fieldRenderProps: FieldRenderProps) => {
-    const { validationMessage, visited, ...others } = fieldRenderProps
+    const { validationMessage, visited, value, ...others } = fieldRenderProps
+    const [show, setShow] = useState<boolean>(false)
     currentPassword = fieldRenderProps.value
     return (
         <>
@@ -50,10 +52,16 @@ const PasswordInput = (fieldRenderProps: FieldRenderProps) => {
                 editorId='password'
                 editorValue={fieldRenderProps.value}
             >
-                <TextBox data-testid="passwordInput" id='password' className='k-rounded-lg' type="password" {...others} suffix={() => (
+                <TextBox value={value} data-testid="passwordInput" id='password' className='k-rounded-lg' type={show ? "text" : "password"} {...others} suffix={() => (
                     <>
                         <InputSuffix>
-                            <RemoveRedEyeIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.2rem" }} />
+                            {
+                                show ?
+                                    <VisibilityOffIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.3rem" }} onClick={() => setShow(false)} />
+
+                                    :
+                                    <RemoveRedEyeIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.3rem" }} onClick={() => setShow(true)} />
+                            }
                         </InputSuffix>
                     </>
                 )} />
@@ -65,7 +73,7 @@ const PasswordInput = (fieldRenderProps: FieldRenderProps) => {
     )
 }
 const UsernameInput = (fieldRenderProps: FieldRenderProps) => {
-    const { validationMessage, visited, ...others } = fieldRenderProps
+    const { validationMessage, visited, value, ...others } = fieldRenderProps
     return (
         <>
             <FloatingLabel
@@ -73,7 +81,7 @@ const UsernameInput = (fieldRenderProps: FieldRenderProps) => {
                 editorId='username'
                 editorValue={fieldRenderProps.value}
             >
-                <Input id='username' {...others} className='k-rounded-lg' />
+                <Input id='username' value={value} {...others} className='k-rounded-lg' />
             </FloatingLabel>
             {
                 visited && validationMessage && <Error>{validationMessage}</Error>
@@ -94,7 +102,7 @@ const confirmPassValidator = (value: string) => {
 const ConfirmPasswordInput = (fieldRenderProps: FieldRenderProps) => {
     const [show, setShow] = useState<boolean>(false)
 
-    const { validationMessage, visited, ...others } = fieldRenderProps
+    const { validationMessage, visited, value, ...others } = fieldRenderProps
     return (
         <>
             <FloatingLabel
@@ -103,9 +111,15 @@ const ConfirmPasswordInput = (fieldRenderProps: FieldRenderProps) => {
                 editorValue={fieldRenderProps.value}
             >
 
-                <TextBox data-testid="confirmPassword" id='repassword' type={show ? 'text' : "password"} {...others} className='k-rounded-lg' suffix={() => (
+                <TextBox value={value} data-testid="confirmPassword" id='repassword' type={show ? 'text' : "password"} {...others} className='k-rounded-lg' suffix={() => (
                     <>
-                        <RemoveRedEyeIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.2rem" }} onClick={() => setShow(true)} />
+                        {
+                            show ?
+                                <VisibilityOffIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.3rem" }} onClick={() => setShow(false)} />
+
+                                :
+                                <RemoveRedEyeIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.3rem" }} onClick={() => setShow(true)} />
+                        }
                     </>
                 )} />
             </FloatingLabel>
@@ -124,7 +138,7 @@ const emailValidator = (value: string) =>
 //*this Func render fileInput of email, and checking is value of mail isvalid or not
 const EmailInput = (fieldRenderProps: FieldRenderProps) => {
 
-    const { validationMessage, visited, ...others } = fieldRenderProps;
+    const { validationMessage, visited, value, ...others } = fieldRenderProps;
     return (
         <>
             <FloatingLabel
@@ -132,7 +146,7 @@ const EmailInput = (fieldRenderProps: FieldRenderProps) => {
                 editorId='email'
                 editorValue={fieldRenderProps.value}
             >
-                <Input id='email' {...others} className='k-rounded-lg' />
+                <Input value={value} id='email' {...others} className='k-rounded-lg' />
             </FloatingLabel>
             {visited && validationMessage && <Error>{validationMessage}</Error>}
         </>
@@ -195,74 +209,21 @@ const Register = observer((props: Props) => {
     }
 
     return (
-        <div className='wfull h-full flex justify-center items-center   '>
-
-            {/* <section data-testid="register-container" className='h-auto w-auto '>
-                            <div className='min-h-[20rem] w-[20rem] pb-[1rem] flex flex-col items-center gap-[2rem] rounded-xl shadow-2xl backdrop-blur-xl bg-white/30 overflow-hidden '>
-                                <div className='w-full h-[5rem] flex justify-center items-center box-primary-gradientcolor'>
-                                    <p className='w-max text-[1.6rem] font-bold text-white'>Register</p>
-                                </div>
-                                <div className='w-full h-auto flex flex-col gap-[1rem] justify-center p-[0.5rem]'>
-                                    <div className='w-full'>
-                                        <FieldWrapper>
-                                            <Field
-                                                name={"username"}
-                                                type={"text"}
-                                                component={UsernameInput}
-                                                label={"UserName"}
-                                                validator={usernameValidator}
-                                            />
-                                        </FieldWrapper>
-                                    </div>
-                                    <div className='w-full'>
-                                        <FieldWrapper >
-                                            <Field
-                                                name={"password"}
-                                                component={PasswordInput}
-                                                label={"Password"}
-                                                validator={passwordValidator}
-                                            />
-                                        </FieldWrapper>
-                                    </div>
-                                    <div className='w-full'>
-                                        <FieldWrapper>
-                                            <Field
-                                                name={"repassword"}
-                                                component={ConfirmPasswordInput}
-                                                label={"Confirm password"}
-                                                validator={ConfirmPassValidator}
-
-                                            />
-                                        </FieldWrapper>
-                                    </div>
-                                    <div className="w-full flex justify-center">
-                                        <Button data-testid="btn_trigger" className={`w-[50%] ${styles.submitButton}`} disabled={!formRenderProps.allowSubmit}>Register</Button>
-                                    </div>
-                                </div>
-                                <div className="w-full flex justify-center items-center gap-2">
-                                    <p className="text-[0.8rem] font-normal">
-                                        You already having account?
-                                    </p>
-                                    <Link className="text-[0.7rem] underline" to="/todo/login">Go to login</Link>
-                                </div>
-                            </div>
-                        </section> */}
-
-            <section className='h-[25rem] w-[60rem] rounded-xl shadow-xl bg-[#d6e4ef] flex overflow-hidden'>
-                <div className='flex-1 p-[1rem]'>
+        <div data-testid="register-container" className='wfull h-full flex justify-center items-center'>
+            <section className='h-[25rem] w-[60rem] rounded-xl shadow-xl bg-[#fff] flex overflow-hidden'>
+                <div className='flex-1 '>
                     <Form
                         onSubmit={submitRegister}
                         render={(formRenderProps: FormRenderProps) => (
-                            <FormElement style={{ maxWidth: 650 }} className='h-full flex flex-col gap-1'>
+                            <FormElement className='h-full w-full p-[1.2rem] flex flex-col gap-1'>
                                 <fieldset className={`k-form-fieldset ${styles.form_register}`}>
                                     <div className='w-full flex justify-center'>
-                                        <p className='w-max h-max text-[2rem] font-bold'>Sign up</p>
+                                        <p className='w-max h-max text-[2rem] text-[#648bcf] font-bold'>Sign up</p>
                                     </div>
                                     <div className="k-form-field-wrap">
                                         <Field
                                             name={"username"}
                                             component={UsernameInput}
-                                            labelClassName={"k-form-label"}
                                             validator={usernameValidator}
                                         />
                                     </div>
@@ -270,7 +231,6 @@ const Register = observer((props: Props) => {
                                         <Field
                                             name={"email"}
                                             component={EmailInput}
-                                            labelClassName={"k-form-label"}
                                             validator={emailValidator}
                                         />
                                     </div>
@@ -278,7 +238,6 @@ const Register = observer((props: Props) => {
                                         <Field
                                             name={"password"}
                                             component={PasswordInput}
-                                            labelClassName={"k-form-label"}
                                             validator={passwordValidator}
                                         />
                                     </div>
@@ -286,20 +245,25 @@ const Register = observer((props: Props) => {
                                         <Field
                                             name={"repassword"}
                                             component={ConfirmPasswordInput}
-                                            labelClassName={"k-form-label"}
                                             validator={confirmPassValidator}
-
                                         />
                                     </div>
 
                                 </fieldset>
-                                <div className="mt-auto k-form-buttons ">
-                                    <Button className={`w-[50%]  ${styles.submitButton}`} disabled={!formRenderProps.allowSubmit}>Submit</Button>
+                                <div className="mt-auto flex flex-col gap-1">
+                                    <Button className={`w-[50%]  ${styles.submitButton}`} disabled={!formRenderProps.allowSubmit}>Sign Up</Button>
+                                    <span
+                                        className='flex items-center gap-2'
+                                    >
+                                        <p className='text-[0.8rem]'>I already have an account</p>
+                                        <Link to={'/todo/login'} className='text-[0.7rem] font-bold cursor-pointer underline'>
+                                            Go to login
+                                        </Link>
+                                    </span>
                                 </div>
                             </FormElement>
                         )} />
                 </div>
-
 
                 <div className='flex-1 '>
                     <img src={backGroundRegister} alt="" className='aspect-video w-full h-full object-cover' />

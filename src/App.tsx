@@ -2,10 +2,13 @@
 import "./App.scss"
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { routes } from "./routes/route";
+import mainBackground from './images/sndbackground.jpg'
 
 function App() {
   return (
-    <div data-testid="container" className="w-full h-auto flex justify-center bg-gradient-to-r from-[#6a85b6] to-[#bac8e0]">
+    <div data-testid="container" className="w-full h-auto flex justify-center bg-center bg-cover bg-no-repeat" style={{
+      backgroundImage: `url(${mainBackground})`
+    }}>
       <section className="w-full h-auto ">
         <BrowserRouter>
           <Routes>
