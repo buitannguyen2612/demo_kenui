@@ -3,6 +3,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { observer } from 'mobx-react-lite';
 import { todoActions } from '../../mobX/store';
 import { ITodo } from '../../pages/homePage/page';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
 
 // define the props type when passing into this component
@@ -36,24 +37,23 @@ const CardTodo = observer((props: Props) => {
 
   return (
     <>
-      <div onClick={() => toggleComplete(items.id)} className={`max-w-full h-[auto] min-h-[3rem] p-[0_1rem]  flex items-center rounded-xl shadow-xl group hover:translate-y-[-1px] ease-linear-transition ${items.complete && 'line-through'} border-solid border-[#7FA1C3] border-[2px]`}>
-        <p className='w-[90%] text-[1rem] text-black flex-shrink-0 '>{items.title}</p>
+      <div onClick={() => toggleComplete(items.id)} className={`max-w-full h-[auto] min-h-[3rem] p-[0_1rem]  flex items-center rounded-xl shadow-md group hover:translate-y-[-1px] ease-linear-transition ${items.complete && 'line-through'} border-solid border-mainCorlor border-[2px]`}>
+        <p className='w-[90%] text-normalTxt text-black flex-shrink-0 '>{items.title}</p>
         <span className='flex-1 ml-auto hidden group-hover:flex gap-2 ease-linear-transition'>
-          <DeleteIcon sx={{
-            color: "#C7253E",
-            cursor: "pointer"
-          }}
-            onClick={(e) => removeTodo(items.id, e)}
-          />
-          <EditIcon sx={{
-            color: "#86D293",
+          <DriveFileRenameOutlineIcon sx={{
+            color: "#648bcf",
             cursor: "pointer"
           }}
             onClick={(e) => {
               passData(items, e)
             }}
           />
-
+          <DeleteIcon sx={{
+            color: "#648bcf",
+            cursor: "pointer"
+          }}
+            onClick={(e) => removeTodo(items.id, e)}
+          />
         </span>
       </div >
     </>

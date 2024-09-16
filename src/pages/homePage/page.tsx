@@ -24,12 +24,12 @@ const HomePage = observer((props: Props) => {
     const [todos, setTodos] = useState<ITodo>()
 
 
-    // catch the string of input and pass it to state
+    //* catch the string of input and pass it to state
     const onChangeValue = (val: string) => {
         setValueInput(val)
     }
 
-    // adidng new string to todo in store
+    //* adidng new string to todo in store
     const triggerAdd = (e: React.FormEvent) => {
         e.preventDefault()
         const stringLength = valueInput.length
@@ -53,25 +53,19 @@ const HomePage = observer((props: Props) => {
         }
     }
 
-    // clean all of todo 
-    // const deleteAll = (e: React.FormEvent) => {
-    //     e.stopPropagation()
-    //     store.clearAllTodo()
-    // }
-
-    // handle close popup
+    //* handle close popup
     const closePopup = () => {
         setOpenPopup(false)
     }
 
-    // getting data from the card and open popup
+    //* getting data from the card and open popup
     const storeData = (val: ITodo) => {
         setOpenPopup(true)
         setTodos(val)
     }
 
 
-    // we can get this searching query for calling api or do something we want
+    //* we can get this searching query for calling api or do something we want
     const location = useLocation()
     useEffect(() => {
         console.log(location);
@@ -82,23 +76,22 @@ const HomePage = observer((props: Props) => {
     return (
         <>
             <article className='w-full h-full flex justify-center items-center bg-transparent'>
-                <div className='w-[40rem] h-[30rem] flex flex-col gap-[2rem] p-[1rem] rounded-xl shadow-xl bg-[#f0f1f3]'>
-                    {/* input todo */}
+                <div className='w-[40rem] h-[30rem] flex flex-col gap-[2rem] p-[1rem] rounded-xl shadow-2xl bg-skiny'>
+
+                    {/* Input text adding new todo */}
                     <form onSubmit={triggerAdd} className='w-full h-auto flex-shrink-0 flex flex-col gap-2'>
                         <div className='w-full h-[4rem] flex rounded-xl overflow-hidden shadow-xl bg-white'>
-                            <input onChange={(e) => onChangeValue(e.target.value)} value={valueInput} type="text" className='w-[85%] h-full flex-shrink-0 border-none outline-none pl-[0.5rem] text-[1rem]' placeholder='Enter your todo' />
-                            <div className='flex-1 flex items-center'>
-                                <button type='submit' className=' btn-shape-rounded hover-effect-topleft'>ADD</button>
+                            <input onChange={(e) => onChangeValue(e.target.value)} value={valueInput} type="text" className='w-[85%] h-full flex-shrink-0 pl-[0.5rem] text-normalTxt border-none outline-none' placeholder='Enter your todo' />
+                            <div className='flex-1 p-[0.5rem] bg-transparent'>
+                                <button type='submit' className='btn-shape-rounded hover-effect-topleft h-full w-full'>ADD</button>
                             </div>
                         </div>
-                        {/* <div className='w-full flex gap-2 justify-start pl-[0.2rem]'>
-                            <button type='button' onClick={(e) => deleteAll(e)} className='btn-shape-rounded hover-effect-topleft'>CLEAR ALL</button>
-                        </div> */}
                     </form>
-                    {/* input todo */}
+                    {/* Input text adding new todo */}
 
-                    <hr className='w-full h-[2px] bg-[#a6a6a6]' />
-                    {/* list todo */}
+                    <hr className='w-full h-[2px] bg-[#a6a6a6] border-none' />
+
+                    {/* Render todo list */}
                     <div className='w-full flex-1 overflow-y-auto p-[0.2rem] no-scrollbar'>
                         <div className='h-auto w-full flex flex-col gap-[1rem] '>
                             {
@@ -108,15 +101,17 @@ const HomePage = observer((props: Props) => {
                             }
                         </div>
                     </div>
-                    {/* list todo */}
+                    {/* Render todo list */}
 
                 </div>
             </article>
 
 
+            {/* Render popup with boolean */}
             <PopupForm isOpen={openPopup} callBack={closePopup}>
                 <FormCreate todo={todos} store={store} callBack={closePopup} />
             </PopupForm>
+            {/* Render popup with boolean */}
         </>
     )
 })

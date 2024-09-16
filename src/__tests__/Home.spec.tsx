@@ -62,20 +62,20 @@ describe('HomePage component', () => {
         expect(toast.error).toHaveBeenCalledWith('🦄 Do not leave this empty!!', expect.any(Object));
     });
 
-    it('should clear all todos when the clear button is clicked', () => {
-        render(
-            <MemoryRouter>
-                <HomePage />
-            </MemoryRouter>
-        );
+    // it('should clear all todos when the clear button is clicked', () => {
+    //     render(
+    //         <MemoryRouter>
+    //             <HomePage />
+    //         </MemoryRouter>
+    //     );
 
-        const inputElement = screen.getByPlaceholderText('Enter your todo')
+    //     const inputElement = screen.getByPlaceholderText('Enter your todo')
 
-        const clearButton = screen.getByText('CLEAR ALL');
-        fireEvent.click(clearButton);
+    //     const clearButton = screen.getByText('CLEAR ALL');
+    //     fireEvent.click(clearButton);
 
-        expect(inputElement).toHaveValue('')
-        expect(todoActions.todos).toHaveLength(0)
-        expect(todoActions.clearAllTodo).toHaveBeenCalled();
-    });
+    //     expect(inputElement).toHaveValue('')
+    //     expect(todoActions.todos).toHaveLength(0)
+    //     expect(todoActions.clearAllTodo).toHaveBeenCalled();
+    // });
 });

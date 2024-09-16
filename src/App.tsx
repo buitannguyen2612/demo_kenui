@@ -1,5 +1,5 @@
-// import '@progress/kendo-theme-default/dist/all.css';
-import "./App.scss"
+import '@progress/kendo-theme-default/dist/all.css';
+// import "./App.scss"
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { routes } from "./routes/route";
 import mainBackground from './images/sndbackground.jpg'

@@ -31,6 +31,8 @@ jest.mock('../routes/route', () => ({
     ],
 }));
 
+jest.mock('./images/sndbackground.jpg', () => 'sndbackground.jpg')
+
 describe('App component', () => {
     it('should render without crashing', () => {
         render(

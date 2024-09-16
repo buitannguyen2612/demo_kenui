@@ -29,6 +29,8 @@ jest.mock('../mobX/store', () => ({
     },
 }));
 
+jest.mock('../../images/sndRegisterbg.jpg', () => 'sndRegisterbg.jpg');
+
 const renderComponent = () => {
     return render(
         <Router>
@@ -44,7 +46,7 @@ describe('Register Component', () => {
         expect(screen.getByTestId('register-container')).toBeInTheDocument();
     });
 
-    test('validates password length', () => {
+    it('validates password length', () => {
         renderComponent();
         const passwordInput = screen.getByTestId('passwordInput');
         fireEvent.change(passwordInput, { target: { value: 'a' } });
@@ -52,7 +54,7 @@ describe('Register Component', () => {
         expect(screen.getByText('Password must contain in 2-10 character')).toBeInTheDocument();
     });
 
-    test('validates confirm password', () => {
+    it('validates confirm password', () => {
         renderComponent();
         const passwordInput = screen.getByTestId('passwordInput');
         const confirmPasswordInput = screen.getByTestId('confirmPassword');
@@ -64,7 +66,7 @@ describe('Register Component', () => {
         expect(screen.getByText('Confirm password must be same to current password')).toBeInTheDocument();
     });
 
-    test('validates email format', () => {
+    it('validates email format', () => {
         renderComponent();
         const emailInput = screen.getByLabelText('Email:');
         fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
@@ -72,7 +74,7 @@ describe('Register Component', () => {
         expect(screen.getByText('Please enter a valid email.')).toBeInTheDocument();
     });
 
-    test('submits the form with valid data', () => {
+    it('submits the form with valid data', () => {
         renderComponent();
 
         // Fill in the username

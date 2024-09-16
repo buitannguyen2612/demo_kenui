@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { todoActions } from "../../mobX/store"
 import { ITodo } from "../../pages/homePage/page"
-import { Bounce, toast } from "react-toastify"
+import { showToatify } from "../../utils/toastify"
 
 type Props = {
     todo?: ITodo
@@ -20,30 +20,10 @@ const FormCreate = ({ todo, store, callBack }: Props) => {
             if (id && value) {
                 store.updateTodo(id, value)
                 callBack()
-                toast.success('🦄 Update successfull!!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Bounce,
-                });
+                showToatify('🦄 Update successfull!!', 'success')
             }
             else {
-                toast.error('🦄 Dont leave the input empty!!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Bounce,
-                });
+                showToatify('🦄 Dont leave the input empty!!', 'error')
             }
         } catch (error) {
             console.log(error);
@@ -57,10 +37,10 @@ const FormCreate = ({ todo, store, callBack }: Props) => {
 
 
     return (
-        <form onSubmit={(e) => todo && updateString(todo.id, e)} className='w-[40rem] h-[15rem] flex flex-col items-center p-[1rem] gap-[1rem] rounded-xl shadow-xl box-primary-gradientcolor'>
-            <p className='text-[1.8rem] font-bold text-white'>Update todo</p>
-            <div className='w-full h-[3rem] rounded-xl  overflow-hidden'>
-                <input type="text" value={value ? value : ''} onChange={(e) => setValue(e.target.value)} className='w-full h-full text-[1rem] pl-[0.5rem] outline-none border-none' />
+        <form onSubmit={(e) => todo && updateString(todo.id, e)} className='w-[40rem] h-[15rem] flex flex-col items-center p-[1rem] gap-[1rem] rounded-xl shadow-xl bg-skiny'>
+            <p className='text-title text-black font-bold'>Update todo</p>
+            <div className='w-full h-[4rem] rounded-xl shadow-xl overflow-hidden'>
+                <input type="text" value={value ? value : ''} onChange={(e) => setValue(e.target.value)} className='w-full h-full text-normalTxt pl-[0.5rem] outline-none border-none' />
             </div>
             <div className='w-full flex justify-end gap-5 mt-auto'>
                 <button type="submit" className='btn-shape-rounded hover-effect-topleft'

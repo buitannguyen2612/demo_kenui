@@ -26,5 +26,6 @@ module.exports = {
     ], 
     '^[./a-zA-Z0-9$_-]+\\.png$': '<rootDir>/RelativeImageStub.js',
     '\\.(css|jpg|png|scss|less|sass)$': "identity-obj-proxy",
+    '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/__mocks__/fileMock.js',
   },
 };

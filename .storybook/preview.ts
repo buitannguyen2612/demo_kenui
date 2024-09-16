@@ -1,4 +1,6 @@
+import '@progress/kendo-theme-default/dist/all.css';
 import type { Preview } from "@storybook/react";
+import '../src/index.css'
 
 const preview: Preview = {
   parameters: {

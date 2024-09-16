@@ -1,6 +1,5 @@
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Button } from '@progress/kendo-react-buttons';
 import { Field, FieldRenderProps, Form, FormElement, FormRenderProps } from '@progress/kendo-react-form';
 import { Input, InputSuffix, TextBox } from '@progress/kendo-react-inputs';
 import {
@@ -9,12 +8,13 @@ import {
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bounce, toast } from 'react-toastify';
+import CustomButton from '../../components/button/page';
+import loginBackground from '../../images/sndloginBackground.jpg';
 import { authenticationActions } from '../../mobX/store';
-import loginBackground from '../../images/sndloginBackground.jpg'
+import { showToatify } from '../../utils/toastify';
 import styles from './page.module.css';
 
-type Props = {}
+
 
 
 // * Validate password, return to passing this into component field
@@ -31,7 +31,7 @@ const UsernameInput = (fieldRenderProps: FieldRenderProps) => {
     return (
         <>
 
-            <Input id='username' placeholder='Username' value={value} {...others} className='k-rounded-full h-[3rem]' />
+            <Input id='username' placeholder='Username' value={value} {...others} className='k-rounded-full h-[3rem] text-normalTxt' />
             {
                 visited && validationMessage && <Error>{validationMessage}</Error>
             }
@@ -52,13 +52,12 @@ const PasswordInput = (fieldRenderProps: FieldRenderProps) => {
     return (
         <>
 
-            <TextBox value={value} placeholder='Password' data-testid="passwordInput" id='password' className='k-rounded-full h-[3rem]' type={show ? "text" : "password"} {...others} suffix={() => (
+            <TextBox value={value} placeholder='Password' data-testid="passwordInput" id='password' className='k-rounded-full h-[3rem] text-normalTxt' type={show ? "text" : "password"} {...others} suffix={() => (
                 <>
                     <InputSuffix>
                         {
                             show ?
                                 <VisibilityOffIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.3rem" }} onClick={() => setShow(false)} />
-
                                 :
                                 <RemoveRedEyeIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.3rem" }} onClick={() => setShow(true)} />
                         }
@@ -72,7 +71,11 @@ const PasswordInput = (fieldRenderProps: FieldRenderProps) => {
     )
 }
 
-const Login = observer((props: Props) => {
+interface Ilogin {
+    onClick?: () => void
+}
+
+const Login = observer(({ onClick = () => { } }: Ilogin) => {
     //*Define the store by using context 
     const loginAction = authenticationActions
     const navigate = useNavigate()
@@ -82,89 +85,17 @@ const Login = observer((props: Props) => {
         const userName: string = dataItem.username
         const password: string = dataItem.password
         if (loginAction.loginByAccount(userName, password)) {
-            toast.success('🦄 Login success!!', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-                transition: Bounce,
-            });
-            //TODO: finding routing to next page with react router dom
+            showToatify('🦄 Login success!!', 'success')
             navigate('/todo/homepage')
         }
         else {
-            toast.error('🦄 Login fail!!', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-                transition: Bounce,
-            });
-
+            showToatify('🦄 Login fail!!', 'error')
         }
     }
-
     return (
         <>
-            {/* <Form
-                onSubmit={submitLogin}
-                render={(formRenderProps: FormRenderProps) => (
-                    <FormElement className='w-full h-full flex justify-center items-center'>
-                        <div className='w-auto h-auto '>
-                            <div className=' min-h-[20rem] w-[20rem] pb-[1rem] flex flex-col items-center gap-[2rem] rounded-xl bg-[#d6e4ef] overflow-hidden'>
-                                <div className='w-full h-[5rem] flex justify-center items-center box-primary-gradientcolor'>
-                                    <p data-testid="login-title" className='w-max text-[1.6rem] font-bold text-white'>Login</p>
-                                </div>
-                                <div className='w-full h-auto flex flex-col gap-[2rem] justify-center p-[0.5rem]'>
-                                    <div className='w-full'>
-                                        <FieldWrapper>
-                                            <div className="k-form-field-wrap">
-                                                <Field
-                                                    name={"username"}
-                                                    component={Input}
-                                                    label={"UserName"}
-                                                />
-                                            </div>
-                                        </FieldWrapper>
-                                    </div>
-                                    <div className='w-full'>
-                                        <FieldWrapper>
-                                            <div className="k-form-field-wrap">
-                                                <Field
-                                                    name={"password"}
-                                                    component={Input}
-                                                    label={"Password"}
-                                                />
-                                            </div>
-                                        </FieldWrapper>
-                                    </div>
-                                    <div className='w-full flex justify-center'>
-                                        <Button data-testid="btn-login" className={`w-[50%] ${styles.submitButton}`} disabled={!formRenderProps.allowSubmit}>Login</Button>
-                                    </div>
-                                </div>
-                                <div className="w-full flex justify-center items-center gap-1">
-                                    <p className="text-[0.8rem] font-normal">
-                                        Doesnt have account?
-                                    </p>
-                                    <Link className="text-[0.7rem] font-bold underline" to="/">Register</Link>
-                                </div>
-                            </div>
-                        </div>
-
-                    </FormElement>
-                )}
-            /> */}
-
             <section data-testid="login-container" className='w-full h-full flex justify-center items-center'>
-                <div className='h-[40rem] w-[60rem] rounded-xl shadow-xl bg-[#fff] flex overflow-hidden'>
+                <div className='h-[40rem] w-[60rem] rounded-xl shadow-xl bg-white flex overflow-hidden'>
                     <div className='flex-1'>
                         <img src={loginBackground} alt="" className='w-full h-full object-cover' />
                     </div>
@@ -174,7 +105,7 @@ const Login = observer((props: Props) => {
                             render={(formRenderProps: FormRenderProps) => (
                                 <FormElement className='h-full w-full p-[2rem] flex flex-col justify-center gap-5'>
                                     <div className='w-full flex justify-center'>
-                                        <p className='w-max h-max text-[2rem] text-[#648bcf] font-bold'>Member Login</p>
+                                        <p className='w-max h-max text-title text-mainCorlor font-bold'>Member Login</p>
                                     </div>
                                     <fieldset className={`k-form-fieldset ${styles.form_register}`}>
                                         <div className="k-form-field-wrap">
@@ -192,19 +123,21 @@ const Login = observer((props: Props) => {
                                             />
                                         </div>
                                     </fieldset>
-                                    <div className="w-full flex flex-col items-center gap-1">
-                                        <Button className={`w-[50%]  ${styles.submitButton}`} disabled={!formRenderProps.allowSubmit}>Login</Button>
+                                    <div className="w-full flex flex-col items-center gap-3">
+                                        <CustomButton isDisable={!formRenderProps.allowSubmit} title={'Sign Up'} trigger={onClick} />
                                         <span
                                             className='flex items-center gap-2'
                                         >
-                                            <p className='text-[0.8rem]'>I not have account</p>
-                                            <Link to={'/'} className='text-[0.7rem] font-bold cursor-pointer underline'>
+                                            <p className='text-supTxt'>I not have account</p>
+                                            <Link to={'/'} className='text-supTxt font-bold cursor-pointer underline'>
                                                 Go to Signup
                                             </Link>
                                         </span>
+
                                     </div>
                                 </FormElement>
                             )} />
+
 
                     </div>
                 </div>

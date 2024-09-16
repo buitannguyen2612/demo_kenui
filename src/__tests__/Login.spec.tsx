@@ -1,17 +1,14 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react"
-import { MemoryRouter } from "react-router-dom"
-import Login from "../pages/login/page"
-import { toast } from "react-toastify"
-import { authentActions, authenticationActions } from '../mobX/store';
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import Login from "../pages/login/page";
 
 afterEach(() => {
     cleanup()
 })
 
-const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockNavigate,
+    useNavigate: jest.fn(),
 }));
 
 
@@ -31,6 +28,8 @@ jest.mock('../mobX/store', () => ({
     },
 }));
 
+jest.mock('../../images/sndloginBackground.jpg', () => 'sndloginBackground.jpg');
+
 const conponentRender = () => {
     return render(
         <MemoryRouter>
@@ -39,6 +38,7 @@ const conponentRender = () => {
 }
 
 describe("Login component", () => {
+
     it('Component render with no crash', () => {
         conponentRender()
         const element = screen.getByTestId('login-container')
@@ -47,7 +47,7 @@ describe("Login component", () => {
 
     it("Validation username input fail", () => {
         conponentRender()
-        const usernameInput = screen.getByLabelText('Username:');
+        const usernameInput = screen.getByPlaceholderText('Username');
         fireEvent.change(usernameInput, { target: { value: 'nguyenS@' } });
 
         expect(screen.getByText("UserName must not contain in special character and uppercase letter")).toBeInTheDocument()

@@ -109,6 +109,7 @@ class TodoStore {
         })
     }
 
+
     clearAllTodo() {
         this.todos.length = 0
     }
