@@ -35,12 +35,12 @@ const Header = (props: Props) => {
         }
     ]
     return (
-        <header className='w-full h-[6rem] flex-shrink-0 shadow-xl flex justify-between items-center p-[0_2rem]'>
+        <header className='w-full h-[4rem] flex-shrink-0 bg-[#fff] shadow-xl flex justify-between items-center p-[0_2rem]'>
             <ul className="flex gap-[1rem]">
                 {
                     (isHomePage || isGrid ? privateList : listComponent).map(val => (
                         <NavLink to={val.path} key={val.id} className={({ isActive, isPending }) =>
-                            isActive ? "relative text-[1.8rem] font-bold text-white before:content-[''] before:absolute before:bottom-0 before:left-0 before:bg-white before:h-[0.2rem] before:w-full" : "text-[1.8rem] font-normal text-white "
+                            isActive ? "relative text-[1.2rem] font-bold text-black before:content-[''] before:absolute before:bottom-0 before:left-0 before:bg-[#6a85b6] before:h-[0.2rem] before:w-full" : "text-[1.2rem] font-normal text-black "
                         }>
                             {val.label}
                         </NavLink>

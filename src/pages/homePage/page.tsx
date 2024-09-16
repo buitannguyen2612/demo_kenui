@@ -99,8 +99,8 @@ const HomePage = observer((props: Props) => {
 
                     <hr className='w-full h-[2px] bg-[#a6a6a6]' />
                     {/* list todo */}
-                    <div className='w-full flex-1 overflow-y-auto p-[0.2rem]'>
-                        <div className='h-auto w-full flex flex-col gap-[1rem]'>
+                    <div className='w-full flex-1 overflow-y-auto p-[0.2rem] no-scrollbar'>
+                        <div className='h-auto w-full flex flex-col gap-[1rem] '>
                             {
                                 store.todos.map(val => (
                                     <CardTodo key={val.id} items={val} store={store} holdingData={storeData} />

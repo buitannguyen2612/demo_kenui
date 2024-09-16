@@ -36,23 +36,24 @@ const CardTodo = observer((props: Props) => {
 
   return (
     <>
-      <div onClick={() => toggleComplete(items.id)} className={`max-w-full h-[auto] min-h-[3rem] p-[0_1rem]  flex items-center rounded-xl box-primary-gradientcolor shadow-xl group hover:translate-y-[-1px] ease-linear-transition ${items.complete && 'line-through'}`}>
-        <p className='w-[90%] text-[1rem] text-white flex-shrink-0 '>{items.title}</p>
+      <div onClick={() => toggleComplete(items.id)} className={`max-w-full h-[auto] min-h-[3rem] p-[0_1rem]  flex items-center rounded-xl shadow-xl group hover:translate-y-[-1px] ease-linear-transition ${items.complete && 'line-through'} border-solid border-[#7FA1C3] border-[2px]`}>
+        <p className='w-[90%] text-[1rem] text-black flex-shrink-0 '>{items.title}</p>
         <span className='flex-1 ml-auto hidden group-hover:flex gap-2 ease-linear-transition'>
-          <EditIcon sx={{
-            color: "#E2DAD6",
-            cursor: "pointer"
-          }}
-            onClick={(e) => {
-              passData(items, e)
-            }}
-          />
           <DeleteIcon sx={{
             color: "#C7253E",
             cursor: "pointer"
           }}
             onClick={(e) => removeTodo(items.id, e)}
           />
+          <EditIcon sx={{
+            color: "#86D293",
+            cursor: "pointer"
+          }}
+            onClick={(e) => {
+              passData(items, e)
+            }}
+          />
+
         </span>
       </div >
     </>
