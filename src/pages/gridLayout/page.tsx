@@ -258,7 +258,7 @@ const DataTable = (props: Props) => {
             if (item.items) {
                 count = count + getNumberOfSelectedItems(item.items);
             } else {
-                count = count + (item.selected == true ? 1 : 0);
+                count = count + (item.selected === true ? 1 : 0);
             }
         });
         return count;
