@@ -127,19 +127,21 @@ const DataTable = (props: Props) => {
 
     //* using for handle all of the actions of user
     const dataStateChange = (event: any) => {
-        //dataState : contain all of current data, pagination, sort, filter, group
-        //Usually using : skip, take, sort, filter, and group in this case
+
         let processedData = process(filteredData, event.dataState);
+
+        // this map will return new array with "selected field", this map will saving all selected field when navigate or sorting
         processedData.data = processedData.data.map((item) => ({
             ...item,
             selected: currentSelectedState[item[DATA_ITEM_KEY]],
         }));
-        //Re setting data after the actions of user
+        // after that will save with to current state
+
         setDataResult(processedData);
         setDataState(event.dataState);
     };
 
-    //? What is this callback using for ? : Using expand the row(or group) but still not see the real think in UI
+    //* Using expand the row(or group) but still not see the real think in UI
     const onExpandChange = React.useCallback(
         (event: any) => {
             const newData = [...dataResult.data];
@@ -191,16 +193,13 @@ const DataTable = (props: Props) => {
     //* this function will calling after we select all of row
     const onHeaderSelectionChange = React.useCallback(
         (event: GridHeaderSelectionChangeEvent) => {
-            console.log('select all of row');
             const checkboxElement: any = event.syntheticEvent.target;
             const checked = checkboxElement.checked;
-            console.log(checked);
 
             const newSelectedState: any = {};
             data.forEach((item) => {
                 newSelectedState[idGetter(item)] = checked;
             });
-
             setCurrentSelectedState(newSelectedState);
 
             const newData = data.map((item) => ({
@@ -296,12 +295,12 @@ const DataTable = (props: Props) => {
                     total={resultState.total}
                     onDataStateChange={dataStateChange}
                     {...dataState}
-                    onExpandChange={onExpandChange}
-                    expandField="expanded"
                     dataItemKey={DATA_ITEM_KEY}
                     selectedField={SELECTED_FIELD}
                     onHeaderSelectionChange={onHeaderSelectionChange}
                     onSelectionChange={onSelectionChange}
+                    onExpandChange={onExpandChange}
+                    expandField="expanded"
                     groupable={true}
                     size={"small"}
                     className="mt-[2rem]"
@@ -330,7 +329,6 @@ const DataTable = (props: Props) => {
                         width={50}
                         headerSelectionValue={checkHeaderSelectionValue()}
                     />
-
                     <Column title="Employee">
                         <Column
                             field="full_name"
@@ -350,9 +348,9 @@ const DataTable = (props: Props) => {
                         <Column
                             field="country"
                             title="Country"
-                            cells={{
-                                data: CountryCell,
-                            }}
+                            // cells={{
+                            //     data: CountryCell,
+                            // }}
                             columnMenu={ColumnMenu}
                             width="100px"
                         />
@@ -360,9 +358,9 @@ const DataTable = (props: Props) => {
                             field="is_online"
                             title="Status"
                             filter="text"
-                            cells={{
-                                data: BudgetCell,
-                            }}
+                            // cells={{
+                            //     data: BudgetCell,
+                            // }}
                             columnMenu={ColumnMenu}
                             width="100px"
                         />

@@ -9,7 +9,7 @@ function App() {
     <div data-testid="container" className="w-full h-auto flex justify-center bg-center bg-cover bg-no-repeat" style={{
       backgroundImage: `url(${mainBackground})`
     }}>
-      <section className="w-full h-auto ">
+      <section className="w-full h-auto overflow-x-hidden">
         <BrowserRouter>
           <Routes>
             {

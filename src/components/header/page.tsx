@@ -18,7 +18,7 @@ const Header = (props: Props) => {
 
     const isHomePage = useMatch('/todo/homepage')
     const isGrid = useMatch('/todo/grid')
-
+    const isManage = useMatch('/todo/user-manage')
 
     const listComponent = [
         {
@@ -42,6 +42,11 @@ const Header = (props: Props) => {
             id: 2,
             path: '/todo/grid',
             label: 'GridTable'
+        },
+        {
+            id: 3,
+            path: '/todo/user-manage',
+            label: 'userManage'
         }
     ]
     return (
@@ -49,7 +54,7 @@ const Header = (props: Props) => {
             <header className='w-full h-[4rem] flex-shrink-0 bg-[#fff] shadow-xl flex justify-between items-center p-[0_5rem]'>
                 <ul className="flex gap-[1rem]">
                     {
-                        (isHomePage || isGrid ? privateList : listComponent).map(val => (
+                        ((isHomePage || isGrid || isManage) ? privateList : listComponent).map(val => (
                             <NavLink to={val.path} key={val.id} className={({ isActive, isPending }) =>
                                 isActive ? "relative text-[1.2rem] font-bold text-black before:content-[''] before:absolute before:bottom-0 before:left-0 before:bg-[#6a85b6] before:h-[0.2rem] before:w-full" : "text-[1.2rem] font-normal text-black "
                             }>
@@ -60,7 +65,7 @@ const Header = (props: Props) => {
 
                 </ul>
                 {
-                    (isHomePage || isGrid) &&
+                    (isHomePage || isGrid || isManage) &&
                     <div className="h-full flex justify-center items-center">
                         <span className="h-[3rem] w-[3rem] cursor-pointer rounded-full overflow-hidden" ref={anchor} onClick={() => triggerShowBtn()}><img src={logoImage} alt="Logo" className="w-full h-full object-cover object-center" /></span>
                     </div>

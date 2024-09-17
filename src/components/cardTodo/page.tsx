@@ -38,8 +38,8 @@ const CardTodo = observer((props: Props) => {
   return (
     <>
       <div onClick={() => toggleComplete(items.id)} className={`max-w-full h-[auto] min-h-[3rem] p-[0_1rem]  flex items-center rounded-xl shadow-md group hover:translate-y-[-1px] ease-linear-transition ${items.complete && 'line-through'} border-solid border-mainCorlor border-[2px]`}>
-        <p className='w-[90%] text-normalTxt text-black flex-shrink-0 '>{items.title}</p>
-        <span className='flex-1 ml-auto hidden group-hover:flex gap-2 ease-linear-transition'>
+        <p className='w-[90%] text-normalTxt text-black flex-shrink-1 break-words'>{items.title}</p>
+        <span className='flex-1 flex ml-auto opacity-0 group-hover:opacity-100 gap-2 ease-linear-transition'>
           <DriveFileRenameOutlineIcon sx={{
             color: "#648bcf",
             cursor: "pointer"
