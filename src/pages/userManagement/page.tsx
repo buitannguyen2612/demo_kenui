@@ -262,7 +262,10 @@ const UserManage = (props: Props) => {
                     cell={CustomColumn}
                     width="200px"
                 />
-
+                {/* 
+                // Todo: Adding new column, and display button "edit" and "remove"  
+                // Todo: Try to see this link for see solution: https://www.telerik.com/kendo-react-ui/components/grid/editing/editing-inline/
+                */}
             </Grid>
         </div>
     )
