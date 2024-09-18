@@ -2,7 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import { observer } from 'mobx-react-lite';
 import { IlistTodoResponse } from '../../rest/IApi/IAuthentication';
-import { deleteTodoElement } from '../../rest/api/todoApi';
+import { completeTodo, deleteTodoElement, unComPleteTodo } from '../../rest/api/todoApi';
 import { showToatify } from '../../utils/toastify';
 
 
@@ -16,9 +16,30 @@ type Props = {
 const CardTodo = observer((props: Props) => {
   const { items, holdingData, fetchAllTodo } = props
 
+  // *Fetch complete todo
+  const fetchComplete = async (id: string) => {
+    try {
+      await completeTodo(id, { isComplete: true })
+      fetchAllTodo()
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // *Fetch unComplete todo
+  const fetchUnComplete = async (id: string) => {
+    try {
+      await unComPleteTodo(id, { isComplete: false })
+      fetchAllTodo()
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   //* calling to method of the mobx and update the init state
-  const toggleComplete = async (id: string) => {
-    return
+  const handleCheck = async (id: string, isComplete: boolean) => {
+    isComplete ? fetchUnComplete(id) : fetchComplete(id)
+
   }
 
   //* calling to method of the mobx and remove field from the current state
@@ -45,7 +66,7 @@ const CardTodo = observer((props: Props) => {
 
   return (
     <>
-      <div onClick={() => toggleComplete(items._id)} className={`max-w-full h-[auto] min-h-[3rem] p-[0_1rem]  flex items-center rounded-xl shadow-md group hover:translate-y-[-1px] ease-linear-transition ${items.isComplete && 'line-through'} border-solid border-mainCorlor border-[2px]`}>
+      <div onClick={() => handleCheck(items._id, items.isComplete)} className={`max-w-full h-[auto] min-h-[3rem] p-[0_1rem]  flex items-center rounded-xl shadow-md group hover:translate-y-[-1px] ease-linear-transition ${items.isComplete && 'line-through'} border-solid border-mainCorlor border-[2px]`}>
         <p className='w-[90%] text-normalTxt text-black flex-shrink-1 break-words'>{items.name}</p>
         <span className='flex-1 flex ml-auto opacity-0 group-hover:opacity-100 gap-2 ease-linear-transition'>
           <DriveFileRenameOutlineIcon sx={{

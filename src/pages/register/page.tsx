@@ -164,9 +164,9 @@ const Register = observer(({ onClick = () => { } }: IRegister) => {
             await register(payload)
             showToatify('Register successful!!', 'success')
             navigate("/todo/login");
-        } catch (error) {
-            showToatify('Recheck your information!!', 'error')
-            console.log(error);
+        } catch (error: any) {
+            showToatify(`${error.response.data}`, 'error')
+            console.log(error.response.data);
         }
     }
 

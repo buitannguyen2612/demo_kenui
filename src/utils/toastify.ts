@@ -1,6 +1,6 @@
 import { Bounce, toast } from "react-toastify";
 
-export const showToatify = (message: string, type: string) => {
+export const showToatify = (message: any, type: string) => {
     type === 'success' ?
         toast.success(message, {
             position: "top-right",

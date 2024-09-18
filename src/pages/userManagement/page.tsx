@@ -4,10 +4,13 @@ import { getter } from '@progress/kendo-react-common';
 import { setGroupIds } from '@progress/kendo-react-data-tools';
 import { GridColumn as Column, Grid, GridColumnMenuFilter, GridColumnMenuGroup, GridColumnMenuProps, GridColumnMenuSort, GridCustomCellProps, GridDataStateChangeEvent, GridHeaderSelectionChangeEvent, GridSelectionChangeEvent, GridToolbar } from '@progress/kendo-react-grid';
 import { Input } from '@progress/kendo-react-inputs';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { listUser } from './mockData';
 import PopupForm from '../../components/popup/page';
 import FormAddUser from '../../components/addUserForm/page';
+import { getAllUser } from '../../rest/api/adminApi';
+import { AxiosResponse } from 'axios';
+import { IListUserReponse, IRegisterPayload } from '../../rest/IApi/IAuthentication';
 
 
 const SELECTED_FIELD = "selected";
@@ -66,14 +69,15 @@ type Props = {}
 
 const UserManage = (props: Props) => {
     // * Always get the id when passing the object into this
-    const idGetter = getter("id")
+    const idGetter = getter("_id")
 
 
     const [poupAdd, setPopupAdd] = useState<boolean>(false)
+    const [currentData, setCurrentData] = useState<Array<IListUserReponse>>([])
     const [filterValue, setFilterValue] = useState()
     const [dataState, setDataState] = useState<State>(initialDataState)
-    const [filterData, setFilterData] = useState<IUser[]>(listUser)
-    const [mockData, setMockData] = useState(filterData)
+    const [filterData, setFilterData] = useState<Array<IListUserReponse>>(currentData)
+    const [mockData, setMockData] = useState<Array<IListUserReponse>>(filterData)
     const [dataResult, setDataResult] = useState(process(filterData, dataState)) // * Process will store the the object total Array and Current array
     const [currenSelected, setCurrentSelected] = useState<{ [id: string]: boolean | number[] }>({})
 
@@ -123,8 +127,7 @@ const UserManage = (props: Props) => {
 
     // * Handle user "tick box" on "row" of "table"
     const onSelectionChange = (event: GridSelectionChangeEvent) => {
-        const idUserSelected = event.dataItem.id
-
+        const idUserSelected = event.dataItem._id
         //  Adding new boolean to current id of user
         const newSelected: any = {
             ...currenSelected,
@@ -172,11 +175,11 @@ const UserManage = (props: Props) => {
     const onFilterChange = (ev: any) => {
         let value = ev.value;
         setFilterValue(ev.value);
-        const newData = listUser.filter((item) => {
+        const newData = currentData.filter((item) => {
             let match = false;
 
             for (const property in item) {
-                const propertyValue = item[property as keyof IUser];
+                const propertyValue = item[property as keyof IListUserReponse];
                 if (typeof propertyValue === 'string' && propertyValue.toLocaleLowerCase().indexOf(value) >= 0) {
                     match = true;
                 }
@@ -206,19 +209,28 @@ const UserManage = (props: Props) => {
     const triggerClosAdd = () => setPopupAdd(false)
 
     // * Fetch add new user 
-    const addNew = (data: IUser) => {
+    const addNew = (data: IRegisterPayload) => {
         setPopupAdd(false)
-        const newData = filterData
-        setFilterData(prv => (
-            prv.map(val => ({
-                ...val,
-                data
-            }))
-        ))
-        // todo: adding axios calling api here
-        newData.push(data)
-        setDataResult(process(newData, dataState))
+        // Todo: adding axios calling api here
+        // Todo: remove user
+        // Todo: update user
     }
+
+    // *Fetch all user
+    const fetchAllUser = () => {
+        getAllUser().then((res: AxiosResponse<Array<IListUserReponse>>) => {
+            setCurrentData(res.data)
+            setFilterData(res.data)
+            setMockData(res.data)
+            setDataResult(process(res.data, dataState))
+        }).catch(err => console.log(err))
+    }
+
+    // * Fetch all current user
+    useEffect(() => {
+        fetchAllUser()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
         <>
@@ -233,7 +245,7 @@ const UserManage = (props: Props) => {
                     onExpandChange={onExpandChange}
                     expandField='expanded'
                     total={dataResult.total}
-                    dataItemKey={'id'}
+                    dataItemKey={'_id'}
                     sortable={true}
                     groupable={true}
                     {...dataState}
@@ -274,7 +286,7 @@ const UserManage = (props: Props) => {
                     />
 
                     <Column
-                        field="fullName"
+                        field="userName"
                         title="Full name"
                         columnMenu={ColumnMenu}
                         width="100px"
@@ -286,15 +298,15 @@ const UserManage = (props: Props) => {
                         width="220px"
                     />
                     <Column
-                        field="listTodo"
-                        title="List Todo"
+                        field="todoCount"
+                        title="totalTodo"
                         columnMenu={ColumnMenu}
-                        width="100px"
+                        width="150px"
                     />
                     <Column
                         title="Action"
                         cell={CustomColumn}
-                        width="200px"
+                        width="400px"
                     />
                     {/* 
                 // Todo: Adding new column, and display button "edit" and "remove"  

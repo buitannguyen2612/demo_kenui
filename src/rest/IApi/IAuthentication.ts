@@ -55,5 +55,16 @@ export interface IAddTodoPayload {
 }
 
 
+export interface IListUserReponse {
+    _id: string;
+    userName: string;
+    email: string;
+    password: string;
+    role:string;
+    todo:number;
+    __v: number;
+}
+
+
 
 

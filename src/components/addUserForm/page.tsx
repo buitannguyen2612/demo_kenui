@@ -8,6 +8,7 @@ import {
 import { useState } from 'react';
 import { IUser } from '../../pages/userManagement/page';
 import CustomButton from '../button/page';
+import { IListUserReponse, IRegisterPayload } from '../../rest/IApi/IAuthentication';
 
 const userNameRegex: RegExp = new RegExp(/[!@#$%^&*(),.?":{}|<>]/)
 const upperCaseRegex: RegExp = new RegExp(/[A-Z]/)
@@ -72,7 +73,7 @@ const EmailInput = (fieldRenderProps: FieldRenderProps) => {
 
 
 type Props = {
-    callback: (val: IUser) => void
+    callback: (val: IRegisterPayload) => void
     close?: Function
 }
 
@@ -84,10 +85,10 @@ const FormAddUser = (props: Props) => {
         const email: string = dataItem.email
         const listTodo = 0
         const newData = {
-            id: 200,
-            fullName: username,
+            userName: username,
+            password: password,
             email: email,
-            listTodo: listTodo,
+            role: 'user'
         }
         callback(newData)
     }

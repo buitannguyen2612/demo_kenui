@@ -5,18 +5,17 @@ import { Input, InputSuffix, TextBox } from '@progress/kendo-react-inputs';
 import {
     Error
 } from "@progress/kendo-react-labels";
+import { AxiosResponse } from 'axios';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import CustomButton from '../../components/button/page';
 import loginBackground from '../../images/sndloginBackground.jpg';
-import { authenticationActions } from '../../mobX/store';
+import { loginAction } from '../../mobX/authen';
+import { login } from '../../rest/api/authentication';
+import { LoginPayload, LoginResponse } from '../../rest/IApi/IAuthentication';
 import { showToatify } from '../../utils/toastify';
 import styles from './page.module.css';
-import { login } from '../../rest/api/authentication';
-import { loginAction } from '../../mobX/authen';
-import axios, { AxiosResponse, AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
-import { LoginPayload, LoginResponse } from '../../rest/IApi/IAuthentication';
 
 
 
@@ -77,15 +76,6 @@ const PasswordInput = (fieldRenderProps: FieldRenderProps) => {
 
 interface Ilogin {
     onClick?: () => void
-}
-
-interface IInforResponse {
-    error: boolean,
-    infomationUser: object,
-    accessToken: string,
-    refreshToken: string,
-    message: string,
-    tokenLifespan: number,
 }
 
 const Login = observer(({ onClick = () => { } }: Ilogin) => {
