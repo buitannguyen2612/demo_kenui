@@ -108,9 +108,20 @@ const HomePage = observer((props: Props) => {
 
 
             {/* Render popup with boolean */}
-            <PopupForm isOpen={openPopup} callBack={closePopup}>
+            {
+                openPopup ?
+                    <div
+                        onClick={() => closePopup()}
+                        id="container"
+                        className="fixed pt-5  inset-0 z-40 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center "
+                    >
+                        <FormCreate todo={todos} store={store} callBack={closePopup} />
+                    </div>
+                    : null
+            }
+            {/* <PopupForm isOpen={openPopup} callBack={closePopup}>
                 <FormCreate todo={todos} store={store} callBack={closePopup} />
-            </PopupForm>
+            </PopupForm> */}
             {/* Render popup with boolean */}
         </>
     )

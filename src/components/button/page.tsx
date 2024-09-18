@@ -5,11 +5,13 @@ type Props = {
     isDisable: boolean
     title: string
     trigger?: () => void
+    btnType: string
+    size: string
 }
 
-const CustomButton = ({ isDisable, title, trigger = () => { } }: Props) => {
+const CustomButton = ({ isDisable, title, trigger = () => { }, size, btnType }: Props) => {
     return (
-        <Button className={`w-[50%]  ${styles.submitButton}`} disabled={isDisable}>{title}</Button>
+        <Button style={{ width: `${size}` }} className={`${btnType === 'primary' ? styles.submitButton : styles.errorButton}`} disabled={isDisable}>{title}</Button>
     )
 }
 

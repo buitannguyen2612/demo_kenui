@@ -124,7 +124,7 @@ const Login = observer(({ onClick = () => { } }: Ilogin) => {
                                         </div>
                                     </fieldset>
                                     <div className="w-full flex flex-col items-center gap-3">
-                                        <CustomButton isDisable={!formRenderProps.allowSubmit} title={'Sign Up'} trigger={onClick} />
+                                        <CustomButton isDisable={!formRenderProps.allowSubmit} title={'Sign Up'} trigger={onClick} btnType='primary' size='50%' />
                                         <span
                                             className='flex items-center gap-2'
                                         >

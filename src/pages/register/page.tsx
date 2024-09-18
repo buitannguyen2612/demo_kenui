@@ -226,7 +226,7 @@ const Register = observer(({ onClick = () => { } }: IRegister) => {
                                     {/* Render all of the input field */}
                                     {
                                         listFieldInput.map((val) => (
-                                            <div className="k-form-field-wrap">
+                                            <div key={val.id} className="k-form-field-wrap">
                                                 <Field
                                                     name={val.name}
                                                     component={val.component}
@@ -239,7 +239,7 @@ const Register = observer(({ onClick = () => { } }: IRegister) => {
 
                                 </fieldset>
                                 <div className="mt-auto flex flex-col gap-3">
-                                    <CustomButton isDisable={!formRenderProps.allowSubmit} title={'Sign Up'} />
+                                    <CustomButton isDisable={!formRenderProps.allowSubmit} title={'Sign Up'} size='50%' btnType='primary' />
                                     <span
                                         className='flex items-center gap-2'
                                     >
