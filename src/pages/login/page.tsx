@@ -13,6 +13,10 @@ import loginBackground from '../../images/sndloginBackground.jpg';
 import { authenticationActions } from '../../mobX/store';
 import { showToatify } from '../../utils/toastify';
 import styles from './page.module.css';
+import { login } from '../../rest/api/authentication';
+import { loginAction } from '../../mobX/authen';
+import axios, { AxiosResponse, AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
+import { LoginPayload, LoginResponse } from '../../rest/IApi/IAuthentication';
 
 
 
@@ -75,22 +79,56 @@ interface Ilogin {
     onClick?: () => void
 }
 
+interface IInforResponse {
+    error: boolean,
+    infomationUser: object,
+    accessToken: string,
+    refreshToken: string,
+    message: string,
+    tokenLifespan: number,
+}
+
 const Login = observer(({ onClick = () => { } }: Ilogin) => {
     //*Define the store by using context 
-    const loginAction = authenticationActions
-    const navigate = useNavigate()
+    const authAction = loginAction
+
+    // * Fetch login 
+    const fetchLogin = async (payload: LoginPayload) => {
+        try {
+            const res: AxiosResponse<LoginResponse> = await login(payload)
+
+            const data = res.data
+            const inforUser = res.data.infomationUser
+            authAction.login(data.accessToken,
+                data.refreshToken,
+                data.tokenLifespan,
+                inforUser.name
+            )
+            showToatify(`Hello bro ${authAction.userName}`, 'success')
+        } catch (error) {
+            console.log(error);
+            showToatify('🦄 Login fail!!', 'error')
+        }
+    }
 
     //*Trigger to login the field
     const submitLogin = (dataItem: { [name: string]: any }) => {
         const userName: string = dataItem.username
         const password: string = dataItem.password
-        if (loginAction.loginByAccount(userName, password)) {
-            showToatify('🦄 Login success!!', 'success')
-            navigate('/todo/homepage')
+
+        const payload = {
+            userName,
+            password
         }
-        else {
-            showToatify('🦄 Login fail!!', 'error')
-        }
+
+        fetchLogin(payload)
+        // if (authAction.loginByAccount(userName, password)) {
+        //     showToatify('🦄 Login success!!', 'success')
+        //     navigate('/todo/homepage')
+        // }
+        // else {
+        //     showToatify('🦄 Login fail!!', 'error')
+        // }
     }
     return (
         <>

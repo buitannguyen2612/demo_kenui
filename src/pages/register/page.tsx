@@ -20,6 +20,8 @@ import backGroundRegister from '../../images/sndRegisterbg.jpg';
 import { authenticationActions } from '../../mobX/store';
 import { showToatify } from '../../utils/toastify';
 import styles from './page.module.css';
+import { register } from '../../rest/api/authentication';
+import { IRegisterPayload } from '../../rest/IApi/IAuthentication';
 
 // * Validate password, return to passing this into component field
 const userNameRegex: RegExp = new RegExp(/[!@#$%^&*(),.?":{}|<>]/)
@@ -156,33 +158,31 @@ const Register = observer(({ onClick = () => { } }: IRegister) => {
 
     const navigate = useNavigate()
 
-    //* Get the context named authentActions in store.mobx
-    const registerAction = authenticationActions
-
-    //*Check if includes user in system
-    const isContainAccount = (username: string, password: string) => {
-        return registerAction.listUser?.some(val => JSON.stringify(val) === JSON.stringify({ username, password }))
+    // * fetch register
+    const fetchRegister = async (payload: IRegisterPayload) => {
+        try {
+            await register(payload)
+            showToatify('Register successful!!', 'success')
+            navigate("/todo/login");
+        } catch (error) {
+            showToatify('Recheck your information!!', 'error')
+            console.log(error);
+        }
     }
 
     //*this func sp of KendoUI, get the data in dataItem 
     const submitRegister = (dataItem: {
         [name: string]: any;
     }) => {
-        onClick()
-        console.log('goi vao day', onClick());
-
-        const userName: string = dataItem.username
-        const password: string = dataItem.password
-
-        if (isContainAccount(userName, password)) {
-            showToatify('Use another account!!', 'error')
-        }
-        else {
-            registerAction.createAccount(userName, password)
-            showToatify('Register successful!!', 'success')
-            navigate("/todo/login");
+        onClick()//! This is make for calling in jestjs
+        const payload = {
+            userName: dataItem.username,
+            password: dataItem.password,
+            email: dataItem.email,
+            role: 'user'
         }
 
+        fetchRegister(payload)
     }
 
     //* Define list of input field

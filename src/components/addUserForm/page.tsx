@@ -1,13 +1,13 @@
-import { Field, FieldRenderProps, Form, FormElement, FormRenderProps } from '@progress/kendo-react-form';
-import { Input, InputSuffix, TextBox } from '@progress/kendo-react-inputs';
-import { useState } from 'react';
-import CustomButton from '../button/page';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { Field, FieldRenderProps, Form, FormElement, FormRenderProps } from '@progress/kendo-react-form';
+import { Input, InputSuffix, TextBox } from '@progress/kendo-react-inputs';
 import {
-    Error,
-    FloatingLabel
+    Error
 } from "@progress/kendo-react-labels";
+import { useState } from 'react';
+import { IUser } from '../../pages/userManagement/page';
+import CustomButton from '../button/page';
 
 const userNameRegex: RegExp = new RegExp(/[!@#$%^&*(),.?":{}|<>]/)
 const upperCaseRegex: RegExp = new RegExp(/[A-Z]/)
@@ -20,25 +20,18 @@ const PasswordInput = (fieldRenderProps: FieldRenderProps) => {
     const [show, setShow] = useState<boolean>(false)
     return (
         <>
-            <FloatingLabel
-                label={"Password:"}
-                editorId='password'
-                editorValue={fieldRenderProps.value}
-            >
-                <TextBox value={value} data-testid="passwordInput" id='password' className='k-rounded-lg text-normalTxt' type={show ? "text" : "password"} {...others} suffix={() => (
-                    <>
-                        <InputSuffix>
-                            {
-                                show ?
-                                    <VisibilityOffIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.3rem" }} onClick={() => setShow(false)} />
-
-                                    :
-                                    <RemoveRedEyeIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.3rem" }} onClick={() => setShow(true)} />
-                            }
-                        </InputSuffix>
-                    </>
-                )} />
-            </FloatingLabel>
+            <TextBox value={value} placeholder='Password' data-testid="passwordInput" id='password' className='k-rounded-full h-[3rem] text-normalTxt' type={show ? "text" : "password"} {...others} suffix={() => (
+                <>
+                    <InputSuffix>
+                        {
+                            show ?
+                                <VisibilityOffIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.3rem" }} onClick={() => setShow(false)} />
+                                :
+                                <RemoveRedEyeIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.3rem" }} onClick={() => setShow(true)} />
+                        }
+                    </InputSuffix>
+                </>
+            )} />
             {
                 visited && validationMessage && <Error>{validationMessage}</Error>
             }
@@ -55,13 +48,7 @@ const UsernameInput = (fieldRenderProps: FieldRenderProps) => {
     const { validationMessage, visited, value, ...others } = fieldRenderProps
     return (
         <>
-            <FloatingLabel
-                label={"Username:"}
-                editorId='username'
-                editorValue={fieldRenderProps.value}
-            >
-                <Input id='username' value={value} {...others} className='k-rounded-lg text-normalTxt' />
-            </FloatingLabel>
+            <Input id='username' placeholder='Username' value={value} {...others} className='k-rounded-full h-[3rem] text-normalTxt' />
             {
                 visited && validationMessage && <Error>{validationMessage}</Error>
             }
@@ -77,13 +64,7 @@ const EmailInput = (fieldRenderProps: FieldRenderProps) => {
     const { validationMessage, visited, value, ...others } = fieldRenderProps;
     return (
         <>
-            <FloatingLabel
-                label={"Email:"}
-                editorId='email'
-                editorValue={fieldRenderProps.value}
-            >
-                <Input value={value} id='email' {...others} className='k-rounded-lg text-normalTxt' />
-            </FloatingLabel>
+            <Input id='email' placeholder='Enter email' value={value} {...others} className='k-rounded-full h-[3rem] text-normalTxt' />
             {visited && validationMessage && <Error>{validationMessage}</Error>}
         </>
     );
@@ -91,13 +72,24 @@ const EmailInput = (fieldRenderProps: FieldRenderProps) => {
 
 
 type Props = {
-    callback?: Function
+    callback: (val: IUser) => void
+    close?: Function
 }
 
 const FormAddUser = (props: Props) => {
-
+    const { close, callback } = props
     const submitLogin = (dataItem: { [name: string]: any }) => {
-        console.log(dataItem);
+        const username: string = dataItem.username
+        const password: string = dataItem.password
+        const email: string = dataItem.email
+        const listTodo = 0
+        const newData = {
+            id: 200,
+            fullName: username,
+            email: email,
+            listTodo: listTodo,
+        }
+        callback(newData)
     }
 
     //* Define list of input field
@@ -122,15 +114,15 @@ const FormAddUser = (props: Props) => {
 
     return (
         <section className='w-full h-full flex justify-center pt-5'>
-            <div className='w-[40rem] min-h-[20rem] flex justify-center p-[0.2rem] rounded-xl shadow-xl bg-white'>
+            <div className='w-[40rem] min-h-[20rem] flex justify-center p-[1rem] rounded-xl shadow-xl bg-white'>
                 <Form
                     onSubmit={submitLogin}
                     render={(formRenderProps: FormRenderProps) => (
-                        <FormElement className='h-full w-full p-[2rem] flex flex-col justify-center'>
+                        <FormElement className='h-full w-full flex flex-col justify-start gap-5'>
                             <div className='w-full flex justify-center'>
                                 <p className='w-max h-max text-title text-mainCorlor font-bold'>Add new user</p>
                             </div>
-                            <fieldset>
+                            <fieldset className='flex flex-col gap-3'>
 
                                 {/* Render all of the input field */}
                                 {
@@ -147,8 +139,9 @@ const FormAddUser = (props: Props) => {
                                 {/* Render all of the input field */}
 
                             </fieldset>
-                            <div className="w-full flex flex-col items-center gap-3">
+                            <div className="w-full flex justify-end gap-3 mt-auto ">
                                 <CustomButton isDisable={!formRenderProps.allowSubmit} title={'Add'} size='10rem' btnType='primary' />
+                                <CustomButton title={'cancel'} size='10rem' btnType='cancel' isButton={true} callBack={close} />
                             </div>
                         </FormElement>
                     )} />

@@ -25,47 +25,6 @@ class Todo {
         this.complete = !this.complete
     }
 }
-
-//* create user
-class User {
-    id: string
-    username: string
-    password: string
-
-    constructor(username: string, password: string) {
-        makeAutoObservable(this, {
-            id: observable,
-            username: observable,
-            password: observable
-        })
-
-        this.id = uuidv4()
-        this.username = username
-        this.password = password
-    }
-}
-
-//* trigger create account from user
-class Account {
-    listUser: Array<User> = []
-
-    constructor() {
-        makeAutoObservable(this, {
-            listUser: observable,
-            createAccount: action,
-            loginByAccount: action,
-        })
-    }
-
-    createAccount(username: string, password: string) {
-        this.listUser.push(new User(username, password))
-    }
-
-    loginByAccount(username: string, password: string): boolean {
-        return this.listUser.some(val => val.username === username && val.password === password)
-    }
-}
-
 //* Define current instance, and feel of method for trigger action
 class TodoStore {
 
@@ -119,6 +78,45 @@ class TodoStore {
     }
 }
 
+//* create user
+class User {
+    id: string
+    username: string
+    password: string
+
+    constructor(username: string, password: string) {
+        makeAutoObservable(this, {
+            id: observable,
+            username: observable,
+            password: observable
+        })
+
+        this.id = uuidv4()
+        this.username = username
+        this.password = password
+    }
+}
+
+//* trigger create account from user
+class Account {
+    listUser: Array<User> = []
+
+    constructor() {
+        makeAutoObservable(this, {
+            listUser: observable,
+            createAccount: action,
+            loginByAccount: action,
+        })
+    }
+
+    createAccount(username: string, password: string) {
+        this.listUser.push(new User(username, password))
+    }
+
+    loginByAccount(username: string, password: string): boolean {
+        return this.listUser.some(val => val.username === username && val.password === password)
+    }
+}
 
 //? So i see this case will work when we calling it to component by useContext hook, but its good more than case below ?
 export const TodoStoreContext = createContext(new TodoStore());

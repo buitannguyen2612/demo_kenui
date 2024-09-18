@@ -16,7 +16,7 @@
 
 
 .errorButton {
-    background-color: #f63838;
+    background-color: #fe6358;
     border: none;
     outline: none;
     font-size: 1rem;
@@ -27,6 +27,6 @@
 
 .errorButton:hover {
     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 8px 3px;
-    background-color: #f63838;
+    background-color: #fe6358;
     color: white;
 }

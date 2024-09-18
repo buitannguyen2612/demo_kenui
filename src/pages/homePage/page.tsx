@@ -1,28 +1,25 @@
+import { AxiosResponse } from 'axios';
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
-import { Bounce, toast } from 'react-toastify';
+import { useLocation } from 'react-router-dom';
 import CardTodo from '../../components/cardTodo/page';
 import PopupForm from '../../components/popup/page';
 import FormCreate from '../../components/updateTodo/page';
-import { todoActions } from '../../mobX/store';
-import { useLocation } from 'react-router-dom';
+import { todoAction } from '../../mobX/todoStore';
+import { getAllTodo, postTodoElement } from '../../rest/api/todoApi';
+import { IAddTodoPayload, IlistTodoResponse } from '../../rest/IApi/IAuthentication';
+import { showToatify } from '../../utils/toastify';
 
-export interface ITodo {
-    id: string
-    title: string
-    complete: boolean
-}
 
 type Props = {
 }
 
 const HomePage = observer((props: Props) => {
-    const store = todoActions
+    const actionTodo = todoAction
 
     const [valueInput, setValueInput] = useState<string>('')
     const [openPopup, setOpenPopup] = useState<boolean>(false)
-    const [todos, setTodos] = useState<ITodo>()
-
+    const [todos, setTodos] = useState<IlistTodoResponse>()
 
     //* catch the string of input and pass it to state
     const onChangeValue = (val: string) => {
@@ -34,21 +31,16 @@ const HomePage = observer((props: Props) => {
         e.preventDefault()
         const stringLength = valueInput.length
         if (stringLength > 0) {
+            const payload: IAddTodoPayload = {
+                name: valueInput.trim(),
+                isComplete: false
+            }
+            fetchAddTodo(payload)
             setValueInput('')
-            store.addTodo(valueInput.trim())
+            // store.addTodo(valueInput.trim())
         }
         else {
-            toast.error('🦄 Do not leave this empty!!', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-                transition: Bounce,
-            });
+            showToatify('🦄 Do not leave this empty!!', 'error')
             return
         }
     }
@@ -59,11 +51,38 @@ const HomePage = observer((props: Props) => {
     }
 
     //* getting data from the card and open popup
-    const storeData = (val: ITodo) => {
+    const storeData = (val: IlistTodoResponse) => {
         setOpenPopup(true)
         setTodos(val)
     }
 
+    // * Fetch get all todolist
+    const fetchAllTodo = async () => {
+        try {
+            const res: AxiosResponse<Array<IlistTodoResponse>> = await getAllTodo()
+            const data = res.data
+            actionTodo.addListTodo(data)
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+
+    // * Fetch add new todo
+    const fetchAddTodo = async (payload: IAddTodoPayload) => {
+        try {
+            await postTodoElement(payload)
+            fetchAllTodo()
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // * calling api
+    useEffect(() => {
+        fetchAllTodo()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     //* we can get this searching query for calling api or do something we want
     const location = useLocation()
@@ -71,6 +90,7 @@ const HomePage = observer((props: Props) => {
         console.log(location);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
 
 
     return (
@@ -91,37 +111,37 @@ const HomePage = observer((props: Props) => {
 
                     <hr className='w-full h-[2px] bg-[#a6a6a6] border-none' />
 
-                    {/* Render todo list */}
+
+                    {/* render list todo */}
                     <div className='w-full flex-1 overflow-y-auto p-[0.2rem] no-scrollbar'>
                         <div className='h-auto w-full flex flex-col gap-[1rem] '>
                             {
-                                store.todos.map(val => (
-                                    <CardTodo key={val.id} items={val} store={store} holdingData={storeData} />
-                                ))
+                                actionTodo.listTodo.length > 0 ?
+                                    actionTodo?.listTodo.map((val, idx) => (
+                                        <CardTodo key={idx} items={val} holdingData={storeData} fetchAllTodo={fetchAllTodo} />
+                                    ))
+                                    :
+                                    <div>
+                                        {/* 
+                                        // Todo: adding skeleton here
+                                        */}
+                                        Adding skeleton
+                                    </div>
+
                             }
                         </div>
                     </div>
-                    {/* Render todo list */}
+                    {/* render list todo */}
+
 
                 </div>
             </article>
 
 
             {/* Render popup with boolean */}
-            {
-                openPopup ?
-                    <div
-                        onClick={() => closePopup()}
-                        id="container"
-                        className="fixed pt-5  inset-0 z-40 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center "
-                    >
-                        <FormCreate todo={todos} store={store} callBack={closePopup} />
-                    </div>
-                    : null
-            }
-            {/* <PopupForm isOpen={openPopup} callBack={closePopup}>
-                <FormCreate todo={todos} store={store} callBack={closePopup} />
-            </PopupForm> */}
+            <PopupForm isOpen={openPopup} callBack={closePopup}>
+                <FormCreate todo={todos} callBack={closePopup} fetchAllTodo={fetchAllTodo} />
+            </PopupForm>
             {/* Render popup with boolean */}
         </>
     )

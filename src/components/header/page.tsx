@@ -2,13 +2,21 @@ import {
     Popover,
     PopoverActionsBar,
 } from "@progress/kendo-react-tooltip";
+import { observer } from "mobx-react-lite";
 import { memo, useCallback, useRef, useState } from "react";
 import { NavLink, useMatch } from "react-router-dom";
 import logoImage from '../../images/logoImage.jpg';
+import { loginAction } from "../../mobX/authen";
+import { logoutFetch } from "../../rest/api/authentication";
+import { readCookie } from "../../utils/cookie";
+import { todoAction } from "../../mobX/todoStore";
+import { showToatify } from "../../utils/toastify";
 
 type Props = {}
 
-const Header = (props: Props) => {
+const Header = observer((props: Props) => {
+    const authAction = loginAction
+    const acitonTodo = todoAction
     const anchor = useRef<HTMLSpanElement>(null);
     const [show, setShow] = useState(false);
 
@@ -49,6 +57,23 @@ const Header = (props: Props) => {
             label: 'userManage'
         }
     ]
+
+    // * fetch logout
+    const fetchLogout = async () => {
+        try {
+            await logoutFetch({ refreshToken: readCookie('refresh_token') })
+            authAction.logout()
+            acitonTodo.clearState()
+        } catch (error) {
+            showToatify('Logout fail huhu!!', 'success')
+            console.log(error);
+        }
+    }
+
+    // * Logout and clear cookie with token and refresh token
+    const triggerLogout = () => {
+        fetchLogout()
+    }
     return (
         <>
             <header className='w-full h-[4rem] flex-shrink-0 bg-[#fff] shadow-xl flex justify-between items-center p-[0_5rem]'>
@@ -80,16 +105,16 @@ const Header = (props: Props) => {
                 position="bottom"
             >
                 <ul className="w-[5rem] flex justify-center">
-                    <li className="cursor-pointer hover:scale-110 hover:font-bold ease-linear-transition">Logout</li>
+                    <li className="cursor-pointer hover:scale-110 hover:font-bold ease-linear-transition select-none" onClick={() => triggerLogout()}>Logout</li>
                 </ul>
                 <PopoverActionsBar>
                     <button onClick={triggerShowBtn} className="btn-shape-rounded">
                         Close
                     </button>
                 </PopoverActionsBar>
-            </Popover>
+            </Popover >
         </>
     )
-}
+})
 
 export default memo(Header)

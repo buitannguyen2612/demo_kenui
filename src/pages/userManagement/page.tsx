@@ -54,7 +54,7 @@ const initialDataState: State = {
     group: [],
 };
 
-interface IUser {
+export interface IUser {
     id: number;
     fullName: string;
     email: string;
@@ -94,7 +94,6 @@ const UserManage = (props: Props) => {
         setDataState(event.dataState)
         setDataResult(processData)
     }
-
 
     // * Handle "tick box" in the header of the column then getting all of the field in the row
     const onHeaderSelectionChange = React.useCallback(
@@ -169,7 +168,6 @@ const UserManage = (props: Props) => {
         [dataResult]
     );
 
-
     // * Handle filter data in table
     const onFilterChange = (ev: any) => {
         let value = ev.value;
@@ -204,14 +202,22 @@ const UserManage = (props: Props) => {
     // * Popup adding new data
     const triggerAdd = () => setPopupAdd(true)
 
-
     // * trigger close add popup
     const triggerClosAdd = () => setPopupAdd(false)
 
     // * Fetch add new user 
     const addNew = (data: IUser) => {
-        console.log(data);
-
+        setPopupAdd(false)
+        const newData = filterData
+        setFilterData(prv => (
+            prv.map(val => ({
+                ...val,
+                data
+            }))
+        ))
+        // todo: adding axios calling api here
+        newData.push(data)
+        setDataResult(process(newData, dataState))
     }
 
     return (
@@ -261,7 +267,7 @@ const UserManage = (props: Props) => {
                         </div>
                     </GridToolbar>
 
-                    {/* <Column
+                    <Column
                         filterable={false}
                         field={SELECTED_FIELD}
                         width={50}
@@ -289,7 +295,7 @@ const UserManage = (props: Props) => {
                         title="Action"
                         cell={CustomColumn}
                         width="200px"
-                    /> */}
+                    />
                     {/* 
                 // Todo: Adding new column, and display button "edit" and "remove"  
                 // Todo: Try to see this link for see solution: https://www.telerik.com/kendo-react-ui/components/grid/editing/editing-inline/
@@ -299,7 +305,7 @@ const UserManage = (props: Props) => {
 
             {/* Render popup with boolean */}
             <PopupForm isOpen={poupAdd} callBack={triggerClosAdd}>
-                <FormAddUser callback={addNew} />
+                <FormAddUser callback={addNew} close={triggerClosAdd} />
             </PopupForm>
             {/* Render popup with boolean */}
         </>
