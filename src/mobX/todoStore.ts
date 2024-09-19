@@ -4,13 +4,15 @@ import { IlistTodoResponse } from '../rest/IApi/IAuthentication';
 class todoSlice {
 
     listTodo: Array<IlistTodoResponse> = []
+    loading: boolean = false
 
     constructor() {
         makeAutoObservable(this,
             {
                 listTodo: observable,
                 addListTodo: action,
-                clearState: action
+                loading: observable,
+                clearState: action,
             }
         )
     }
@@ -21,6 +23,11 @@ class todoSlice {
     clearState() {
         this.listTodo = []
     }
+
+    setLoading(state: boolean) {
+        this.loading = state
+    }
+
 }
 
 export const todoAction = new todoSlice()

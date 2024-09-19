@@ -9,7 +9,8 @@ import { todoAction } from '../../mobX/todoStore';
 import { getAllTodo, postTodoElement } from '../../rest/api/todoApi';
 import { IAddTodoPayload, IlistTodoResponse } from '../../rest/IApi/IAuthentication';
 import { showToatify } from '../../utils/toastify';
-
+import { Skeleton } from "@progress/kendo-react-indicators";
+import UsePopup from '../../hooks/usePopup';
 
 type Props = {
 }
@@ -58,12 +59,16 @@ const HomePage = observer((props: Props) => {
 
     // * Fetch get all todolist
     const fetchAllTodo = async () => {
+        actionTodo.setLoading(true)
         try {
             const res: AxiosResponse<Array<IlistTodoResponse>> = await getAllTodo()
             const data = res.data
             actionTodo.addListTodo(data)
         } catch (error) {
             console.log(error);
+        }
+        finally {
+            actionTodo.setLoading(false)
         }
 
     }
@@ -116,17 +121,16 @@ const HomePage = observer((props: Props) => {
                     <div className='w-full flex-1 overflow-y-auto p-[0.2rem] no-scrollbar'>
                         <div className='h-auto w-full flex flex-col gap-[1rem] '>
                             {
-                                actionTodo.listTodo.length > 0 ?
-                                    actionTodo?.listTodo.map((val, idx) => (
-                                        <CardTodo key={idx} items={val} holdingData={storeData} fetchAllTodo={fetchAllTodo} />
-                                    ))
-                                    :
-                                    <div>
-                                        {/* 
-                                        // Todo: adding skeleton here
-                                        */}
-                                        Adding skeleton
-                                    </div>
+                                actionTodo.loading ?
+                                    Array.from(new Array(4)).map((_, idx) => (
+                                        <Skeleton key={idx} shape={"rectangle"} className='w-full h-[5rem]' style={{ margin: "0" }} />
+                                    )) :
+                                    actionTodo.listTodo.length > 0 ? actionTodo.listTodo.map(val => (
+                                        <CardTodo key={val._id} items={val} holdingData={storeData} fetchAllTodo={fetchAllTodo} />
+                                    )) :
+                                        <div className='w-full h-full flex justify-center items-center'>
+                                            Dont have any todo
+                                        </div>
 
                             }
                         </div>
@@ -139,9 +143,9 @@ const HomePage = observer((props: Props) => {
 
 
             {/* Render popup with boolean */}
-            <PopupForm isOpen={openPopup} callBack={closePopup}>
+            <UsePopup isOpen={openPopup} callBack={closePopup}>
                 <FormCreate todo={todos} callBack={closePopup} fetchAllTodo={fetchAllTodo} />
-            </PopupForm>
+            </UsePopup>
             {/* Render popup with boolean */}
         </>
     )

@@ -16,6 +16,7 @@ import { register } from '../../rest/api/authentication';
 import { showToatify } from '../../utils/toastify';
 import styles from './page.module.css'
 import FormEditUser from '../../components/editUserForm/page';
+import UsePopup from '../../hooks/usePopup';
 
 interface CustomColumnProps extends GridCustomCellProps {
     reFetchUser: () => void;
@@ -421,16 +422,16 @@ const UserManage = observer((props: Props) => {
             </div>
 
             {/* Render popup with boolean */}
-            <PopupForm isOpen={poupAdd} callBack={triggerClosAdd}>
+            <UsePopup isOpen={poupAdd} callBack={triggerClosAdd}>
                 <FormAddUser callback={addNew} close={triggerClosAdd} />
-            </PopupForm>
+            </UsePopup>
             {/* Render popup with boolean */}
 
 
             {/* Render popup edit with boolean */}
-            <PopupForm isOpen={popupEdit} callBack={triggerCloseEdit}>
+            <UsePopup isOpen={popupEdit} callBack={triggerCloseEdit}>
                 <FormEditUser callback={updateUser} close={triggerCloseEdit} itemEdit={valueEdit} />
-            </PopupForm>
+            </UsePopup>
             {/* Render popup edit with boolean */}
         </>
     )
