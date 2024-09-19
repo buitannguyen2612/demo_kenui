@@ -11,7 +11,7 @@ type Props = {
 const AdminLayout = observer((props: Props) => {
     const authActions = loginAction
     const { isLogin, infoUser } = authActions
-    
+
     if (!isLogin || infoUser.role !== 'admin') {
         return <Navigate to={'/'} />
     }

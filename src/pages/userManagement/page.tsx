@@ -343,6 +343,7 @@ const UserManage = observer((props: Props) => {
                     onSelectionChange={onSelectionChange}
                     onHeaderSelectionChange={onHeaderSelectionChange}
                     onExpandChange={onExpandChange}
+                    resizable={true}
                     expandField='expanded'
                     total={dataResult.total}
                     dataItemKey={'_id'}
@@ -383,30 +384,34 @@ const UserManage = observer((props: Props) => {
                         filterable={false}
                         field={SELECTED_FIELD}
                         width={50}
+                        resizable={true}
                     />
 
                     <Column
                         field="userName"
                         title="User Name"
                         columnMenu={ColumnMenu}
-                        width="120px"
+                        resizable={true}
                     />
                     <Column
                         field="email"
                         title="Email"
                         columnMenu={ColumnMenu}
                         width="220px"
+                        resizable={true}
                     />
                     <Column
                         field="todoCount"
                         title="Total"
                         columnMenu={ColumnMenu}
                         width="150px"
+                        resizable={true}
                     />
                     <Column
                         title="Action"
                         cell={(props) => <CustomColumn {...props} reFetchUser={reFetchUser} setPopupEdit={setPopupEdit} setValueEdit={setValueEdit} />}
                         width="400px"
+                        resizable={true}
                     />
                     {/* 
                 // Todo: Adding new column, and display button "edit" and "remove"  

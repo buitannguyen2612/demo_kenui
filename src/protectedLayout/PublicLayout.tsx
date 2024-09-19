@@ -1,8 +1,7 @@
-import React from 'react';
-import Header from '../components/header/page';
-import { loginAction } from '../mobX/authen';
-import { Navigate, useMatch } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { loginAction } from '../mobX/authen';
 
 type Props = {
     children: React.ReactNode
@@ -10,8 +9,8 @@ type Props = {
 
 const PublicLayout = observer((props: Props) => {
     const authActions = loginAction
-    const { isLogin, infoUser } = authActions
-    const isAdmin = infoUser.role === 'admin'
+    const { isLogin } = authActions
+    const isAdmin = authActions.infoUser.role === 'admin'
 
     if (isLogin) {
         if (isAdmin) {

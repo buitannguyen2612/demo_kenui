@@ -11,7 +11,15 @@ interface IInforReponse {
     _id: string;
 }
 
-let access_token = readCookie('access_token')
+let access_token: string | null = readCookie('access_token')
+let parseToken: IInforReponse = access_token !== null ? jwtDecode(access_token) : {
+    exp: 0,
+    iat: 0,
+    mail: '',
+    name: '',
+    role: '',
+    _id: ''
+}
 
 class authenSlice {
     token: string = ''
@@ -19,14 +27,7 @@ class authenSlice {
     tokenLifeSpan: number = 0
     userName: string = ''
     isLogin: boolean = Boolean(access_token)
-    infoUser: IInforReponse = {
-        exp: 0,
-        iat: 0,
-        mail: '',
-        name: '',
-        role: '',
-        _id: ''
-    }
+    infoUser: IInforReponse = parseToken
 
     constructor() {
         makeAutoObservable(this,
@@ -54,6 +55,7 @@ class authenSlice {
         createCookie('refresh_token', refreshToken, day)
         this.isLogin = true
         this.infoUser = jwtDecode(token) || null
+
         this.userName = userName
     }
 
