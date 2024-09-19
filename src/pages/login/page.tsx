@@ -86,18 +86,18 @@ const Login = observer(({ onClick = () => { } }: Ilogin) => {
     const fetchLogin = async (payload: LoginPayload) => {
         try {
             const res: AxiosResponse<LoginResponse> = await login(payload)
-
-            const data = res.data
-            const inforUser = res.data.infomationUser
-            authAction.login(data.accessToken,
+            const data = res?.data
+            const inforUser = res?.data.infomationUser
+            authAction.login(data?.accessToken,
                 data.refreshToken,
                 data.tokenLifespan,
                 inforUser.name
             )
             showToatify(`Hello bro ${authAction.userName}`, 'success')
-        } catch (error) {
+        } catch (error: any) {
+            showToatify(`${error.response.data}`, 'error')
             console.log(error);
-            showToatify('🦄 Login fail!!', 'error')
+
         }
     }
 
@@ -152,7 +152,7 @@ const Login = observer(({ onClick = () => { } }: Ilogin) => {
                                         </div>
                                     </fieldset>
                                     <div className="w-full flex flex-col items-center gap-3">
-                                        <CustomButton isDisable={!formRenderProps.allowSubmit} title={'Sign Up'} trigger={onClick} btnType='primary' size='50%' />
+                                        <CustomButton isDisable={!formRenderProps.allowSubmit} title={'Sign in'} trigger={onClick} btnType='primary' size='50%' />
                                         <span
                                             className='flex items-center gap-2'
                                         >

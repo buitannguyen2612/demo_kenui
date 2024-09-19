@@ -4,14 +4,24 @@ import { getter } from '@progress/kendo-react-common';
 import { setGroupIds } from '@progress/kendo-react-data-tools';
 import { GridColumn as Column, Grid, GridColumnMenuFilter, GridColumnMenuGroup, GridColumnMenuProps, GridColumnMenuSort, GridCustomCellProps, GridDataStateChangeEvent, GridHeaderSelectionChangeEvent, GridSelectionChangeEvent, GridToolbar } from '@progress/kendo-react-grid';
 import { Input } from '@progress/kendo-react-inputs';
-import React, { useEffect, useState } from 'react';
-import { listUser } from './mockData';
-import PopupForm from '../../components/popup/page';
-import FormAddUser from '../../components/addUserForm/page';
-import { getAllUser } from '../../rest/api/adminApi';
 import { AxiosResponse } from 'axios';
-import { IListUserReponse, IRegisterPayload } from '../../rest/IApi/IAuthentication';
+import { observer } from 'mobx-react-lite';
+import React, { useEffect, useState } from 'react';
+import FormAddUser from '../../components/addUserForm/page';
+import PopupForm from '../../components/popup/page';
+import modalStore from '../../mobX/modal';
+import { IListUserReponse, IRegisterPayload, IUserUpatePayload } from '../../rest/IApi/IAuthentication';
+import { deleteUser, getAllUser, putUser } from '../../rest/api/adminApi';
+import { register } from '../../rest/api/authentication';
+import { showToatify } from '../../utils/toastify';
+import styles from './page.module.css'
+import FormEditUser from '../../components/editUserForm/page';
 
+interface CustomColumnProps extends GridCustomCellProps {
+    reFetchUser: () => void;
+    setPopupEdit: (value: boolean) => void
+    setValueEdit: (value: IUserUpatePayload) => void
+}
 
 const SELECTED_FIELD = "selected";
 
@@ -28,18 +38,46 @@ const ColumnMenu = (props: GridColumnMenuProps): JSX.Element => {
 
 
 // * Custom for actions column cell
-const CustomColumn = (props: GridCustomCellProps): JSX.Element => {
+const CustomColumn = observer((props: CustomColumnProps): JSX.Element => {
+
+    // * Handle delete modal
+    const handleDelete = async () => {
+        const idUser = props.dataItem._id
+        try {
+            await deleteUser(idUser)
+            props.reFetchUser()
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // * Trigger open modal delete
+    const confirmDelete = () => {
+        modalStore.openModal("Are you sure you want to delete this user", handleDelete);
+    }
+
+    // * Open edit popup and passing data to edit
+    const handleEdit = () => {
+        const payload: IUserUpatePayload = {
+            id: props.dataItem._id,
+            userName: props.dataItem.userName,
+            email: props.dataItem.email
+        }
+        props.setPopupEdit(true)
+        props.setValueEdit(payload)
+    }
+
     return (
         <td className='flex gap-2'>
-            <Button themeColor={"primary"} onClick={() => console.log('data edit', props)}>
+            <Button themeColor={"primary"} onClick={() => handleEdit()}>
                 Edit
             </Button>
-            <Button onClick={() => console.log('data edit', props)}>
+            <Button onClick={(props) => confirmDelete()}>
                 Remove
             </Button>
-        </td>
+        </td >
     )
-}
+})
 
 
 // todo: Trước mắt thì hàm này sẽ hỗ trợ grouping, nhưng hiện tại chưa thấy tác dụng của nó
@@ -67,12 +105,15 @@ export interface IUser {
 type Props = {}
 
 
-const UserManage = (props: Props) => {
+const UserManage = observer((props: Props) => {
     // * Always get the id when passing the object into this
     const idGetter = getter("_id")
 
 
     const [poupAdd, setPopupAdd] = useState<boolean>(false)
+    const [popupEdit, setPopupEdit] = useState<boolean>(false)
+    const [valueEdit, setValueEdit] = useState<IUserUpatePayload>({ id: '', email: '', userName: '' })
+
     const [currentData, setCurrentData] = useState<Array<IListUserReponse>>([])
     const [filterValue, setFilterValue] = useState()
     const [dataState, setDataState] = useState<State>(initialDataState)
@@ -175,11 +216,18 @@ const UserManage = (props: Props) => {
     const onFilterChange = (ev: any) => {
         let value = ev.value;
         setFilterValue(ev.value);
+
+
+
+
+
         const newData = currentData.filter((item) => {
             let match = false;
 
             for (const property in item) {
                 const propertyValue = item[property as keyof IListUserReponse];
+                // todo: Bo qua id trong condition
+                // 
                 if (typeof propertyValue === 'string' && propertyValue.toLocaleLowerCase().indexOf(value) >= 0) {
                     match = true;
                 }
@@ -190,6 +238,11 @@ const UserManage = (props: Props) => {
 
             return match;
         });
+
+
+
+
+
         setFilterData(newData);
         let clearedPagerDataState = { ...dataState, take: 8, skip: 0 };
         let processedData = process(newData, clearedPagerDataState);
@@ -208,12 +261,59 @@ const UserManage = (props: Props) => {
     // * trigger close add popup
     const triggerClosAdd = () => setPopupAdd(false)
 
+    // * trigger close edit popup
+    const triggerCloseEdit = () => setPopupEdit(false)
+
+
+
     // * Fetch add new user 
-    const addNew = (data: IRegisterPayload) => {
+    const addNew = async (data: IRegisterPayload) => {
         setPopupAdd(false)
-        // Todo: adding axios calling api here
-        // Todo: remove user
-        // Todo: update user
+        try {
+            await register(data)
+            showToatify('Adding successfully !!', 'success')
+            reFetchUser()
+        } catch (error: any) {
+            showToatify(`${error.response.data}`, 'error')
+            console.log(error);
+        }
+    }
+
+    // * Fetch update user
+    const updateUser = async (id: string, data: IUserUpatePayload) => {
+        setPopupAdd(false)
+        try {
+            const payload = {
+                id: data.id,
+                userName: data.userName,
+                email: data.email
+            }
+            await putUser(id, payload)
+            showToatify('Adding successfully !!', 'success')
+            reFetchUser()
+            triggerCloseEdit()
+        } catch (error: any) {
+            showToatify(`${error.response.data}`, 'success')
+        }
+    }
+
+    // *Refetch all user
+    const reFetchUser = async () => {
+        try {
+            const res: AxiosResponse<Array<IListUserReponse>> = await getAllUser()
+            const data = res.data
+            const updateData = data.map(val => ({
+                ...val,
+                selected: currenSelected[idGetter(val)] || false
+            }))
+
+            setCurrentData(updateData)
+            setFilterData(updateData)
+            setMockData(updateData)
+            setDataResult(process(updateData, dataState))
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     // *Fetch all user
@@ -265,12 +365,12 @@ const UserManage = (props: Props) => {
                             }}
                             placeholder="Searching . . . ."
                         />
-                        <div className="export-btns-container">
+                        <div className="export-btns-container flex gap-2">
                             <Button
                                 title="Add new"
-                                themeColor={"primary"}
                                 type="button"
                                 onClick={() => triggerAdd()}
+                                className={styles.btn_trigger}
                             >
                                 Add new
                             </Button>
@@ -287,9 +387,9 @@ const UserManage = (props: Props) => {
 
                     <Column
                         field="userName"
-                        title="Full name"
+                        title="User Name"
                         columnMenu={ColumnMenu}
-                        width="100px"
+                        width="120px"
                     />
                     <Column
                         field="email"
@@ -299,13 +399,13 @@ const UserManage = (props: Props) => {
                     />
                     <Column
                         field="todoCount"
-                        title="totalTodo"
+                        title="Total"
                         columnMenu={ColumnMenu}
                         width="150px"
                     />
                     <Column
                         title="Action"
-                        cell={CustomColumn}
+                        cell={(props) => <CustomColumn {...props} reFetchUser={reFetchUser} setPopupEdit={setPopupEdit} setValueEdit={setValueEdit} />}
                         width="400px"
                     />
                     {/* 
@@ -320,8 +420,15 @@ const UserManage = (props: Props) => {
                 <FormAddUser callback={addNew} close={triggerClosAdd} />
             </PopupForm>
             {/* Render popup with boolean */}
+
+
+            {/* Render popup edit with boolean */}
+            <PopupForm isOpen={popupEdit} callBack={triggerCloseEdit}>
+                <FormEditUser callback={updateUser} close={triggerCloseEdit} itemEdit={valueEdit} />
+            </PopupForm>
+            {/* Render popup edit with boolean */}
         </>
     )
-}
+})
 
 export default UserManage

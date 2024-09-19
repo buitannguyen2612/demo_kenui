@@ -10,11 +10,18 @@ type Props = {
 
 const PublicLayout = observer((props: Props) => {
     const authActions = loginAction
-    const { isLogin } = authActions
+    const { isLogin, infoUser } = authActions
+    const isAdmin = infoUser.role === 'admin'
 
     if (isLogin) {
-        return <Navigate to={'/todo/homepage'} />
+        if (isAdmin) {
+            return <Navigate to={'/todo/user-manage'} />
+        }
+        else {
+            return <Navigate to={'/todo/homepage'} />
+        }
     }
+
     return (
         <div className='w-full h-screen flex flex-col'>
             {/* <Header /> */}

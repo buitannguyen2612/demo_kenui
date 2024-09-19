@@ -3,6 +3,7 @@ import HomePage from "../pages/homePage/page"
 import Login from "../pages/login/page"
 import Register from "../pages/register/page"
 import UserManage from "../pages/userManagement/page"
+import AdminLayout from "../protectedLayout/AdminLayout"
 import PrivateLayout from "../protectedLayout/PrivateLayout"
 import PublicLayout from "../protectedLayout/PublicLayout"
 
@@ -31,7 +32,7 @@ export const routes = [
     {
         path: '/todo/user-manage',
         component: UserManage,
-        layout: PrivateLayout
+        layout: AdminLayout
     },
     {
         path: '/',

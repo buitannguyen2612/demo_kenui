@@ -2,6 +2,14 @@ import { jwtDecode } from "jwt-decode";
 import { action, makeAutoObservable, observable } from "mobx";
 import { clearCookie, createCookie, parseDiffDay, readCookie } from "../utils/cookie";
 
+interface IInforReponse {
+    exp: number;
+    iat: number;
+    mail: string;
+    name: string;
+    role: string;
+    _id: string;
+}
 
 let access_token = readCookie('access_token')
 
@@ -11,7 +19,14 @@ class authenSlice {
     tokenLifeSpan: number = 0
     userName: string = ''
     isLogin: boolean = Boolean(access_token)
-    infoUser: object = {}
+    infoUser: IInforReponse = {
+        exp: 0,
+        iat: 0,
+        mail: '',
+        name: '',
+        role: '',
+        _id: ''
+    }
 
     constructor() {
         makeAutoObservable(this,

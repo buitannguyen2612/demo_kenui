@@ -50,7 +50,7 @@ const FormCreate = ({ todo, callBack, fetchAllTodo }: Props) => {
 
     return (
         <form onSubmit={(e) => todo && updateString(todo._id, e)} className='w-[40rem] h-[15rem] flex flex-col items-center p-[1rem] gap-[1rem] rounded-xl shadow-xl bg-skiny'>
-            <p className='text-title text-black font-bold'>Update todo</p>
+            <p className='text-title text-txtMainColor font-bold'>Update todo</p>
             <div className='w-full h-[4rem] rounded-xl shadow-xl overflow-hidden'>
                 {/* 
                     // Todo: Change default input by Input of react kendo ui

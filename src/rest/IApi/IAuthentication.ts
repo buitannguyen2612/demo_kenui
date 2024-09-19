@@ -60,9 +60,16 @@ export interface IListUserReponse {
     userName: string;
     email: string;
     password: string;
-    role:string;
-    todo:number;
+    role: string;
+    todo: number;
     __v: number;
+}
+
+
+export interface IUserUpatePayload {
+    id: string;
+    userName: string;
+    email: string;
 }
 
 

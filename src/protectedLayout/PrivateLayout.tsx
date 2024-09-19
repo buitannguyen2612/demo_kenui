@@ -10,16 +10,21 @@ type Props = {
 
 const PrivateLayout = observer((props: Props) => {
     const authActions = loginAction
-    const { isLogin } = authActions
+    const { isLogin, infoUser } = authActions
+    const isAdmin = infoUser.role === 'admin'
     const isLoginPage = useMatch('/todo/login')
     const isRegisterPage = useMatch('/')
+    const isHomepage = useMatch('/todo/homepage')
+    const isGridPage = useMatch('/todo/grid')
+    const isAdminPage = useMatch('/todo/user-manage')
 
     if (!isLogin) {
-        return <Navigate to={'/todo/login'} />
+        return <Navigate to={'/'} />
     }
-    else if (isLogin && isLoginPage && isRegisterPage) {
-        return
+    if (isAdmin) {
+        return <Navigate to={'/todo/user-manage'} />
     }
+
     return (
         <div className='w-full h-screen flex flex-col backdrop-blur-xl '>
             <Header />

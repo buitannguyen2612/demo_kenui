@@ -1,48 +1,19 @@
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Field, FieldRenderProps, Form, FormElement, FormRenderProps } from '@progress/kendo-react-form';
-import { Input, InputSuffix, TextBox } from '@progress/kendo-react-inputs';
+import { Input } from '@progress/kendo-react-inputs';
 import {
     Error
 } from "@progress/kendo-react-labels";
-import { useState } from 'react';
-import { IUser } from '../../pages/userManagement/page';
+import { IUserUpatePayload } from '../../rest/IApi/IAuthentication';
 import CustomButton from '../button/page';
-import { IListUserReponse, IRegisterPayload } from '../../rest/IApi/IAuthentication';
 
 const userNameRegex: RegExp = new RegExp(/[!@#$%^&*(),.?":{}|<>]/)
 const upperCaseRegex: RegExp = new RegExp(/[A-Z]/)
-const passwordValidator = (value: string) => {
-    const isValid = value?.length > 2 && value?.length < 10
-    return isValid ? '' : 'Password must contain in 2-10 character'
-}
-const PasswordInput = (fieldRenderProps: FieldRenderProps) => {
-    const { validationMessage, visited, value, ...others } = fieldRenderProps
-    const [show, setShow] = useState<boolean>(false)
-    return (
-        <>
-            <TextBox value={value} placeholder='Password' data-testid="passwordInput" id='password' className='k-rounded-full h-[3rem] text-normalTxt' type={show ? "text" : "password"} {...others} suffix={() => (
-                <>
-                    <InputSuffix>
-                        {
-                            show ?
-                                <VisibilityOffIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.3rem" }} onClick={() => setShow(false)} />
-                                :
-                                <RemoveRedEyeIcon sx={{ color: "black", fontSize: "1rems", cursor: "pointer", marginRight: "0.3rem" }} onClick={() => setShow(true)} />
-                        }
-                    </InputSuffix>
-                </>
-            )} />
-            {
-                visited && validationMessage && <Error>{validationMessage}</Error>
-            }
-        </>
-    )
-}
+
 const usernameValidator = (value: string) => {
     const specialSympol = userNameRegex.test(value)
     const upperCaseCharacter = upperCaseRegex.test(value)
-    const notValid = specialSympol || upperCaseCharacter
+    const isEmpty = value.length === 0
+    const notValid = specialSympol || upperCaseCharacter || isEmpty
     return notValid ? 'UserName must not contain in special character and uppercase letter' : ''
 }
 const UsernameInput = (fieldRenderProps: FieldRenderProps) => {
@@ -58,8 +29,12 @@ const UsernameInput = (fieldRenderProps: FieldRenderProps) => {
     )
 }
 const emailRegex: RegExp = new RegExp(/\S+@\S+\.\S+/);
-const emailValidator = (value: string) =>
-    emailRegex.test(value) ? "" : "Please enter a valid email.";
+const emailValidator = (value: string) => {
+    const isEmpty = value.length > 0
+    const isEmailFormat = emailRegex.test(value)
+    const isValid = isEmpty && isEmailFormat
+    return isValid ? '' : "Please enter a valid email."
+}
 const EmailInput = (fieldRenderProps: FieldRenderProps) => {
 
     const { validationMessage, visited, value, ...others } = fieldRenderProps;
@@ -73,24 +48,30 @@ const EmailInput = (fieldRenderProps: FieldRenderProps) => {
 
 
 type Props = {
-    callback: (val: IRegisterPayload) => void
+    callback: (id: string, val: IUserUpatePayload) => void
     close?: Function
+    itemEdit: IUserUpatePayload
 }
 
-const FormAddUser = (props: Props) => {
-    const { close, callback } = props
+const FormEditUser = (props: Props) => {
+    const { close, callback, itemEdit } = props
     const submitLogin = (dataItem: { [name: string]: any }) => {
+        const idUser: string = itemEdit?.id
         const username: string = dataItem.username
-        const password: string = dataItem.password
         const email: string = dataItem.email
         const newData = {
+            id: itemEdit.id,
             userName: username,
-            password: password,
             email: email,
-            role: 'user'
         }
-        callback(newData)
+        callback(idUser, newData)
     }
+
+    // * Define current data when open edit popup
+    const initialValues = {
+        username: itemEdit?.userName || '',
+        email: itemEdit?.email || ''
+    };
 
     //* Define list of input field
     const listFieldInput = [
@@ -98,29 +79,25 @@ const FormAddUser = (props: Props) => {
             id: 1,
             name: "username",
             component: UsernameInput,
-            validator: usernameValidator
+            validator: usernameValidator,
         }, {
             id: 2,
             name: "email",
             component: EmailInput,
-            validator: emailValidator
-        }, {
-            id: 3,
-            name: "password",
-            component: PasswordInput,
-            validator: passwordValidator
+            validator: emailValidator,
         }
     ]
 
     return (
         <section className='w-full h-full flex justify-center pt-5'>
-            <div className='w-[40rem] min-h-[20rem] flex justify-center p-[1rem] rounded-xl shadow-xl bg-white'>
+            <div className='w-[40rem] min-h-[10rem] flex justify-center p-[1rem] rounded-xl shadow-xl bg-white'>
                 <Form
                     onSubmit={submitLogin}
+                    initialValues={initialValues}
                     render={(formRenderProps: FormRenderProps) => (
                         <FormElement className='h-full w-full flex flex-col justify-start gap-5'>
                             <div className='w-full flex justify-center'>
-                                <p className='w-max h-max text-title text-txtMainColor font-bold'>Add new user</p>
+                                <p className='w-max h-max text-title text-txtMainColor font-bold'>Edit user</p>
                             </div>
                             <fieldset className='flex flex-col gap-3'>
 
@@ -150,4 +127,4 @@ const FormAddUser = (props: Props) => {
     )
 }
 
-export default FormAddUser
+export default FormEditUser
