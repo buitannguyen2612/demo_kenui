@@ -13,3 +13,19 @@
     background-color: #97baf5;
     color: white;
 }
+
+.removeButton {
+    background-color: #fe6358;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: white;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.removeButton:hover {
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 8px 3px;
+    background-color: #fe6358;
+    color: white;
+}

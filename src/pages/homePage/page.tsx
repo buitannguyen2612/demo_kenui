@@ -1,16 +1,15 @@
+import { Skeleton } from "@progress/kendo-react-indicators";
 import { AxiosResponse } from 'axios';
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import CardTodo from '../../components/cardTodo/page';
-import PopupForm from '../../components/popup/page';
 import FormCreate from '../../components/updateTodo/page';
+import UsePopup from '../../hooks/usePopup';
 import { todoAction } from '../../mobX/todoStore';
 import { getAllTodo, postTodoElement } from '../../rest/api/todoApi';
 import { IAddTodoPayload, IlistTodoResponse } from '../../rest/IApi/IAuthentication';
 import { showToatify } from '../../utils/toastify';
-import { Skeleton } from "@progress/kendo-react-indicators";
-import UsePopup from '../../hooks/usePopup';
+import UseCondition from "../../hooks/useConditions";
 
 type Props = {
 }
@@ -38,7 +37,6 @@ const HomePage = observer((props: Props) => {
             }
             fetchAddTodo(payload)
             setValueInput('')
-            // store.addTodo(valueInput.trim())
         }
         else {
             showToatify('🦄 Do not leave this empty!!', 'error')
@@ -73,6 +71,17 @@ const HomePage = observer((props: Props) => {
 
     }
 
+    // * refetch get data
+    const reFetch = async () => {
+        try {
+            const res: AxiosResponse<Array<IlistTodoResponse>> = await getAllTodo()
+            const data = res.data
+            actionTodo.addListTodo(data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     // * Fetch add new todo
     const fetchAddTodo = async (payload: IAddTodoPayload) => {
         try {
@@ -89,24 +98,15 @@ const HomePage = observer((props: Props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    //* we can get this searching query for calling api or do something we want
-    const location = useLocation()
-    useEffect(() => {
-        console.log(location);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-
-
     return (
         <>
-            <article className='w-full h-full flex justify-center items-center bg-transparent'>
+            <article className='w-full h-full flex justify-center items-center bg-transparent md:p-[0_1rem]'>
                 <div className='w-[40rem] h-[30rem] flex flex-col gap-[2rem] p-[1rem] rounded-xl shadow-2xl bg-skiny'>
 
                     {/* Input text adding new todo */}
-                    <form onSubmit={triggerAdd} className='w-full h-auto flex-shrink-0 flex flex-col gap-2'>
+                    <form onSubmit={triggerAdd} className='w-full h-auto shrink-0 flex flex-col gap-2'>
                         <div className='w-full h-[4rem] flex rounded-xl overflow-hidden shadow-xl bg-white'>
-                            <input onChange={(e) => onChangeValue(e.target.value)} value={valueInput} type="text" className='w-[85%] h-full flex-shrink-0 pl-[0.5rem] text-normalTxt border-none outline-none' placeholder='Enter your todo' />
+                            <input onChange={(e) => onChangeValue(e.target.value)} value={valueInput} type="text" className='w-[85%] h-full shrink-0 pl-[0.5rem] text-normalTxt border-none outline-none sm:shrink' placeholder='Enter your todo' />
                             <div className='flex-1 p-[0.5rem] bg-transparent'>
                                 <button type='submit' className='btn-shape-rounded hover-effect-topleft h-full w-full'>ADD</button>
                             </div>
@@ -123,14 +123,15 @@ const HomePage = observer((props: Props) => {
                             {
                                 actionTodo.loading ?
                                     Array.from(new Array(4)).map((_, idx) => (
-                                        <Skeleton key={idx} shape={"rectangle"} className='w-full h-[5rem]' style={{ margin: "0" }} />
+                                        <Skeleton key={idx} shape={"rectangle"} className='w-full h-[3rem] rounded-xl' style={{ margin: "0" }} />
                                     )) :
-                                    actionTodo.listTodo.length > 0 ? actionTodo.listTodo.map(val => (
-                                        <CardTodo key={val._id} items={val} holdingData={storeData} fetchAllTodo={fetchAllTodo} />
-                                    )) :
-                                        <div className='w-full h-full flex justify-center items-center'>
-                                            Dont have any todo
-                                        </div>
+                                    <UseCondition isTrue={actionTodo.listTodo.length > 0} falseValue={'Dont have any todo'} styleString={'w-full h-full flex justify-center items-center'}>
+                                        <>
+                                            {actionTodo.listTodo.map(val => (
+                                                <CardTodo key={val._id} items={val} holdingData={storeData} fetchAllTodo={reFetch} />
+                                            ))}
+                                        </>
+                                    </UseCondition>
 
                             }
                         </div>

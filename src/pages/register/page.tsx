@@ -17,21 +17,18 @@ import { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import CustomButton from '../../components/button/page';
 import backGroundRegister from '../../images/sndRegisterbg.jpg';
-import { authenticationActions } from '../../mobX/store';
 import { showToatify } from '../../utils/toastify';
 import styles from './page.module.css';
 import { register } from '../../rest/api/authentication';
 import { IRegisterPayload } from '../../rest/IApi/IAuthentication';
 
 // * Validate password, return to passing this into component field
-const userNameRegex: RegExp = new RegExp(/[!@#$%^&*(),.?":{}|<>]/)
-const upperCaseRegex: RegExp = new RegExp(/[A-Z]/)
+const userNameRegex: RegExp = new RegExp(/[A-Z\s\W_]/);
 let currentPassword: string
 
 const usernameValidator = (value: string) => {
     const specialSympol = userNameRegex.test(value)
-    const upperCaseCharacter = upperCaseRegex.test(value)
-    const notValid = specialSympol || upperCaseCharacter
+    const notValid = specialSympol || value?.length === 0
     return notValid ? 'UserName must not contain in special character and uppercase letter' : ''
 }
 // * Validate password, return to passing this into component field
@@ -211,8 +208,8 @@ const Register = observer(({ onClick = () => { } }: IRegister) => {
     ]
 
     return (
-        <div data-testid="register-container" className='wfull h-full flex justify-center items-center'>
-            <section className='min-h-[25rem] w-[60rem] rounded-xl shadow-xl bg-white flex overflow-hidden'>
+        <div data-testid="register-container" className='wfull h-full flex justify-center items-center sm:p-[0_1rem]'>
+            <section className='min-h-[25rem] w-[60rem] rounded-xl shadow-xl bg-white flex flex-row overflow-hidden lg:flex-col-reverse lg:h-[40rem] lg:w-[30rem] sm:w-[25rem]'>
                 <div className='flex-1 '>
                     <Form
                         onSubmit={submitRegister}
@@ -220,7 +217,7 @@ const Register = observer(({ onClick = () => { } }: IRegister) => {
                             <FormElement className='h-full w-full p-[1.2rem] flex flex-col gap-1'>
                                 <fieldset className={`k-form-fieldset ${styles.form_register}`}>
                                     <div className='w-full flex justify-center'>
-                                        <p className='w-max h-max text-title text-mainCorlor font-bold'>Sign up</p>
+                                        <p className='w-max h-max text-title text-txtMainColor font-bold'>Sign up</p>
                                     </div>
 
                                     {/* Render all of the input field */}

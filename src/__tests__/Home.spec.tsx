@@ -2,8 +2,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { todoActions } from '../mobX/store';
 import HomePage from '../pages/homePage/page';
+import { postTodoElement } from '../rest/api/todoApi';
 
 jest.mock('../mobX/store', () => ({
     todoActions: {
@@ -12,6 +12,8 @@ jest.mock('../mobX/store', () => ({
         clearAllTodo: jest.fn(),
     },
 }));
+
+jest.mock('../rest/api/todoApi')
 
 jest.mock('react-toastify', () => ({
     toast: {
@@ -32,7 +34,7 @@ describe('HomePage component', () => {
         expect(inputElement).toBeInTheDocument();
     });
 
-    it('should add a todo when the form is submitted with a non-empty input', () => {
+    it('Add todo successfully', () => {
         render(
             <MemoryRouter>
                 <HomePage />
@@ -44,8 +46,10 @@ describe('HomePage component', () => {
 
         fireEvent.change(inputElement, { target: { value: 'New Todo' } });
         fireEvent.click(addButton);
-
-        expect(todoActions.addTodo).toHaveBeenCalledWith('New Todo');
+        expect(postTodoElement).toHaveBeenCalledWith({
+            name: 'New Todo',
+            isComplete: false
+        });
         expect(inputElement).toHaveValue('');
     });
 
@@ -62,20 +66,4 @@ describe('HomePage component', () => {
         expect(toast.error).toHaveBeenCalledWith('🦄 Do not leave this empty!!', expect.any(Object));
     });
 
-    // it('should clear all todos when the clear button is clicked', () => {
-    //     render(
-    //         <MemoryRouter>
-    //             <HomePage />
-    //         </MemoryRouter>
-    //     );
-
-    //     const inputElement = screen.getByPlaceholderText('Enter your todo')
-
-    //     const clearButton = screen.getByText('CLEAR ALL');
-    //     fireEvent.click(clearButton);
-
-    //     expect(inputElement).toHaveValue('')
-    //     expect(todoActions.todos).toHaveLength(0)
-    //     expect(todoActions.clearAllTodo).toHaveBeenCalled();
-    // });
 });

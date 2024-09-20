@@ -8,15 +8,16 @@ import { AxiosResponse } from 'axios';
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 import FormAddUser from '../../components/addUserForm/page';
-import PopupForm from '../../components/popup/page';
+import FormEditUser from '../../components/editUserForm/page';
+import UsePopup from '../../hooks/usePopup';
 import modalStore from '../../mobX/modal';
 import { IListUserReponse, IRegisterPayload, IUserUpatePayload } from '../../rest/IApi/IAuthentication';
 import { deleteUser, getAllUser, putUser } from '../../rest/api/adminApi';
 import { register } from '../../rest/api/authentication';
 import { showToatify } from '../../utils/toastify';
-import styles from './page.module.css'
-import FormEditUser from '../../components/editUserForm/page';
-import UsePopup from '../../hooks/usePopup';
+import styles from './page.module.css';
+import { GridPDFExport } from "@progress/kendo-react-pdf";
+import { ExcelExport } from '@progress/kendo-react-excel-export';
 
 interface CustomColumnProps extends GridCustomCellProps {
     reFetchUser: () => void;
@@ -70,10 +71,10 @@ const CustomColumn = observer((props: CustomColumnProps): JSX.Element => {
 
     return (
         <td className='flex gap-2'>
-            <Button themeColor={"primary"} onClick={() => handleEdit()}>
+            <Button themeColor={"primary"} onClick={() => handleEdit()} className={styles.btn_trigger}>
                 Edit
             </Button>
-            <Button onClick={(props) => confirmDelete()}>
+            <Button onClick={(props) => confirmDelete()} className={styles.removeButton}>
                 Remove
             </Button>
         </td >
@@ -218,31 +219,23 @@ const UserManage = observer((props: Props) => {
         let value = ev.value;
         setFilterValue(ev.value);
 
-
-
-
-
         const newData = currentData.filter((item) => {
             let match = false;
 
             for (const property in item) {
                 const propertyValue = item[property as keyof IListUserReponse];
-                // todo: Bo qua id trong condition
-                // 
-                if (typeof propertyValue === 'string' && propertyValue.toLocaleLowerCase().indexOf(value) >= 0) {
-                    match = true;
-                }
-                if (typeof propertyValue === 'number' && propertyValue.toString().indexOf(value) >= 0) {
-                    match = true;
+                if (property !== '_id') {
+                    if (typeof propertyValue === 'string' && propertyValue.toLocaleLowerCase().indexOf(value) >= 0) {
+                        match = true;
+                    }
+                    if (typeof propertyValue === 'number' && propertyValue.toString().indexOf(value) >= 0) {
+                        match = true;
+                    }
                 }
             }
 
             return match;
         });
-
-
-
-
 
         setFilterData(newData);
         let clearedPagerDataState = { ...dataState, take: 8, skip: 0 };
@@ -333,92 +326,201 @@ const UserManage = observer((props: Props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    let _export: any;
+    const exportExcel = () => {
+        _export.save();
+    };
+
+    let _pdfExport: any;
+    const exportPDF = () => {
+        _pdfExport.save();
+    };
+
+
     return (
         <>
             <div className='w-full h-full flex justify-center items-center '>
-                <Grid
-                    pageable={{ pageSizes: true }}
-                    data={dataResult}
-                    selectedField={SELECTED_FIELD}
-                    onDataStateChange={dataStateChange}
-                    onSelectionChange={onSelectionChange}
-                    onHeaderSelectionChange={onHeaderSelectionChange}
-                    onExpandChange={onExpandChange}
-                    resizable={true}
-                    expandField='expanded'
-                    total={dataResult.total}
-                    dataItemKey={'_id'}
-                    sortable={true}
-                    groupable={true}
-                    {...dataState}
-                    size={"small"}
-                    className="w-[60rem] h-[30rem] overflow-auto"
+                <ExcelExport
+                    data={currentData}
+                    ref={(exporter) => {
+                        _export = exporter;
+                    }}
                 >
-                    <GridToolbar>
-                        <Input
-                            value={filterValue}
-                            onChange={onFilterChange}
-                            style={{
-                                border: "2px solid #ccc",
-                                boxShadow: "inset 0px 0px 0.5px 0px rgba(0,0,0,0.0.1)",
-                                width: "170px",
-                                height: "30px",
-                                marginRight: "10px",
-                            }}
-                            placeholder="Searching . . . ."
+                    <Grid
+                        pageable={{ pageSizes: true }}
+                        data={dataResult}
+                        selectedField={SELECTED_FIELD}
+                        onDataStateChange={dataStateChange}
+                        onSelectionChange={onSelectionChange}
+                        onHeaderSelectionChange={onHeaderSelectionChange}
+                        onExpandChange={onExpandChange}
+                        resizable={true}
+                        expandField='expanded'
+                        total={dataResult.total}
+                        dataItemKey={'_id'}
+                        sortable={true}
+                        groupable={true}
+                        {...dataState}
+                        size={"small"}
+                        className="w-[60rem] h-[30rem] overflow-auto"
+                    >
+                        <GridToolbar>
+                            <Input
+                                value={filterValue}
+                                onChange={onFilterChange}
+                                style={{
+                                    border: "2px solid #ccc",
+                                    boxShadow: "inset 0px 0px 0.5px 0px rgba(0,0,0,0.0.1)",
+                                    width: "170px",
+                                    height: "30px",
+                                    marginRight: "10px",
+                                }}
+                                placeholder="Searching . . . ."
+                            />
+                            <div className="export-btns-container flex gap-2">
+                                <Button
+                                    title="Add new"
+                                    type="button"
+                                    onClick={() => triggerAdd()}
+                                    className={styles.btn_trigger}
+                                >
+                                    Add new
+                                </Button>
+                                <Button onClick={exportExcel}>Export to Excel</Button>
+                                <Button onClick={exportPDF}>Export to PDF</Button>
+                            </div>
+                        </GridToolbar>
+
+                        <Column
+                            filterable={false}
+                            field={SELECTED_FIELD}
+                            width={50}
+                            resizable={true}
                         />
-                        <div className="export-btns-container flex gap-2">
-                            <Button
-                                title="Add new"
-                                type="button"
-                                onClick={() => triggerAdd()}
-                                className={styles.btn_trigger}
-                            >
-                                Add new
-                            </Button>
-                            <Button onClick={() => console.log('btn_one')}>Export to Excel</Button>
-                            <Button onClick={() => console.log('btn_two')}>Export to PDF</Button>
-                        </div>
-                    </GridToolbar>
 
-                    <Column
-                        filterable={false}
-                        field={SELECTED_FIELD}
-                        width={50}
-                        resizable={true}
-                    />
-
-                    <Column
-                        field="userName"
-                        title="User Name"
-                        columnMenu={ColumnMenu}
-                        resizable={true}
-                    />
-                    <Column
-                        field="email"
-                        title="Email"
-                        columnMenu={ColumnMenu}
-                        width="220px"
-                        resizable={true}
-                    />
-                    <Column
-                        field="todoCount"
-                        title="Total"
-                        columnMenu={ColumnMenu}
-                        width="150px"
-                        resizable={true}
-                    />
-                    <Column
-                        title="Action"
-                        cell={(props) => <CustomColumn {...props} reFetchUser={reFetchUser} setPopupEdit={setPopupEdit} setValueEdit={setValueEdit} />}
-                        width="400px"
-                        resizable={true}
-                    />
-                    {/* 
+                        <Column
+                            field="userName"
+                            title="User Name"
+                            columnMenu={ColumnMenu}
+                            resizable={true}
+                        />
+                        <Column
+                            field="email"
+                            title="Email"
+                            columnMenu={ColumnMenu}
+                            width="220px"
+                            resizable={true}
+                        />
+                        <Column
+                            field="todoCount"
+                            title="Total"
+                            columnMenu={ColumnMenu}
+                            width="150px"
+                            resizable={true}
+                        />
+                        <Column
+                            title="Action"
+                            cell={(props) => <CustomColumn {...props} reFetchUser={reFetchUser} setPopupEdit={setPopupEdit} setValueEdit={setValueEdit} />}
+                            width="400px"
+                            resizable={true}
+                        />
+                        {/* 
                 // Todo: Adding new column, and display button "edit" and "remove"  
                 // Todo: Try to see this link for see solution: https://www.telerik.com/kendo-react-ui/components/grid/editing/editing-inline/
                 */}
-                </Grid>
+                    </Grid>
+                </ExcelExport>
+                <GridPDFExport
+                    ref={(element) => {
+                        _pdfExport = element;
+                    }}
+                    margin="1cm"
+                >
+                    <Grid
+                        pageable={{ pageSizes: true }}
+                        data={dataResult}
+                        selectedField={SELECTED_FIELD}
+                        onDataStateChange={dataStateChange}
+                        onSelectionChange={onSelectionChange}
+                        onHeaderSelectionChange={onHeaderSelectionChange}
+                        onExpandChange={onExpandChange}
+                        resizable={true}
+                        expandField='expanded'
+                        total={dataResult.total}
+                        dataItemKey={'_id'}
+                        sortable={true}
+                        groupable={true}
+                        {...dataState}
+                        size={"small"}
+                        className="w-[60rem] h-[30rem] overflow-auto"
+                    >
+                        <GridToolbar>
+                            <Input
+                                value={filterValue}
+                                onChange={onFilterChange}
+                                style={{
+                                    border: "2px solid #ccc",
+                                    boxShadow: "inset 0px 0px 0.5px 0px rgba(0,0,0,0.0.1)",
+                                    width: "170px",
+                                    height: "30px",
+                                    marginRight: "10px",
+                                }}
+                                placeholder="Searching . . . ."
+                            />
+                            <div className="export-btns-container flex gap-2">
+                                <Button
+                                    title="Add new"
+                                    type="button"
+                                    onClick={() => triggerAdd()}
+                                    className={styles.btn_trigger}
+                                >
+                                    Add new
+                                </Button>
+                                <Button onClick={() => console.log('btn_one')}>Export to Excel</Button>
+                                <Button onClick={exportPDF}>Export to PDF</Button>
+                            </div>
+                        </GridToolbar>
+
+                        <Column
+                            filterable={false}
+                            field={SELECTED_FIELD}
+                            width={50}
+                            resizable={true}
+                        />
+
+                        <Column
+                            field="userName"
+                            title="User Name"
+                            columnMenu={ColumnMenu}
+                            resizable={true}
+                        />
+                        <Column
+                            field="email"
+                            title="Email"
+                            columnMenu={ColumnMenu}
+                            width="220px"
+                            resizable={true}
+                        />
+                        <Column
+                            field="todoCount"
+                            title="Total"
+                            columnMenu={ColumnMenu}
+                            width="150px"
+                            resizable={true}
+                        />
+                        <Column
+                            title="Action"
+                            cell={(props) => <CustomColumn {...props} reFetchUser={reFetchUser} setPopupEdit={setPopupEdit} setValueEdit={setValueEdit} />}
+                            width="400px"
+                            resizable={true}
+                        />
+                        {/* 
+                // Todo: Adding new column, and display button "edit" and "remove"  
+                // Todo: Try to see this link for see solution: https://www.telerik.com/kendo-react-ui/components/grid/editing/editing-inline/
+                */}
+                    </Grid>
+                </GridPDFExport>
+
             </div>
 
             {/* Render popup with boolean */}

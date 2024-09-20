@@ -1,20 +1,23 @@
 import '@testing-library/jest-dom';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import { authenticationActions } from '../mobX/store';
+import { toast, ToastContainer } from 'react-toastify';
 import Register from '../pages/register/page';
+import { register } from '../rest/api/authentication';
+import { showToatify } from '../utils/toastify';
 
 afterEach(() => {
     cleanup()
 })
 
+jest.mock('../rest/api/authentication')
+
 jest.mock('react-toastify', () => ({
     toast: {
         error: jest.fn(),
-        success: jest.fn(),
+        success: jest.fn()
     },
-    ToastContainer: jest.fn(() => null),
+    Bounce: jest.fn(),
 }));
 
 const mockNavigate = jest.fn();
@@ -34,7 +37,6 @@ jest.mock('../../images/sndRegisterbg.jpg', () => 'sndRegisterbg.jpg');
 const renderComponent = () => {
     return render(
         <Router>
-            <ToastContainer />
             <Register />
         </Router>
     );
@@ -98,7 +100,7 @@ describe('Register Component', () => {
         fireEvent.click(submitButton);
 
         // Check if the form was submitted (you might need to adjust this based on your implementation)
-        expect(screen.getByText('Register successful!!')).toBeInTheDocument();
+        expect(register).toHaveBeenCalledWith({ email: "test@example.com", password: "26122001", role: "user", userName: "nguyen" })
     });
 
 

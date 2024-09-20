@@ -6,7 +6,7 @@ import {
 import { IUserUpatePayload } from '../../rest/IApi/IAuthentication';
 import CustomButton from '../button/page';
 
-const userNameRegex: RegExp = new RegExp(/[!@#$%^&*(),.?":{}|<>]/)
+const userNameRegex: RegExp = new RegExp(/[A-Z\s\W_]/);
 const upperCaseRegex: RegExp = new RegExp(/[A-Z]/)
 
 const usernameValidator = (value: string) => {

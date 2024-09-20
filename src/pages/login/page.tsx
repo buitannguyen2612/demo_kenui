@@ -21,7 +21,7 @@ import styles from './page.module.css';
 
 
 // * Validate password, return to passing this into component field
-const userNameRegex: RegExp = new RegExp(/[!@#$%^&*(),.?":{}|<>]/)
+const userNameRegex: RegExp = new RegExp(/[A-Z\s\W_]/);
 const upperCaseRegex: RegExp = new RegExp(/[A-Z]/)
 const usernameValidator = (value: string) => {
     const specialSympol = userNameRegex.test(value)
@@ -122,18 +122,18 @@ const Login = observer(({ onClick = () => { } }: Ilogin) => {
     }
     return (
         <>
-            <section data-testid="login-container" className='w-full h-full flex justify-center items-center'>
-                <div className='h-[40rem] w-[60rem] rounded-xl shadow-xl bg-white flex overflow-hidden'>
-                    <div className='flex-1'>
+            <section data-testid="login-container" className='w-full h-full flex justify-center items-center '>
+                <div className='h-[40rem] w-[60rem] rounded-xl shadow-xl bg-white flex flex-row overflow-hidden lg:flex-col lg:min-h-[30rem] lg:w-[35rem] md:h-[30rem] md:w-[30rem] md-p-[1rem] md:overflow-auto'>
+                    <div className='flex-1 lg:h-[50%] lg:w-full md:hidden'>
                         <img src={loginBackground} alt="" className='w-full h-full object-cover' />
                     </div>
-                    <div className='flex-1'>
+                    <div className='flex-1 lg:min-h-[50%] md:h-full md:w-[30rem]'>
                         <Form
                             onSubmit={submitLogin}
                             render={(formRenderProps: FormRenderProps) => (
                                 <FormElement className='h-full w-full p-[2rem] flex flex-col justify-center gap-5'>
                                     <div className='w-full flex justify-center'>
-                                        <p className='w-max h-max text-title text-mainCorlor font-bold'>Member Login</p>
+                                        <p className='w-max h-max text-title text-txtMainColor font-bold lg:hidden md:block'>Member Login</p>
                                     </div>
                                     <fieldset className={`k-form-fieldset ${styles.form_register}`}>
                                         <div className="k-form-field-wrap">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { updateTodo } from "../../rest/api/todoApi"
 import { IlistTodoResponse } from "../../rest/IApi/IAuthentication"
 import { showToatify } from "../../utils/toastify"
+import { TextArea } from "@progress/kendo-react-inputs"
 
 type Props = {
     todo?: IlistTodoResponse
@@ -51,16 +52,12 @@ const FormCreate = ({ todo, callBack, fetchAllTodo }: Props) => {
     return (
         <form onSubmit={(e) => todo && updateString(todo._id, e)} className='w-[40rem] h-[15rem] flex flex-col items-center p-[1rem] gap-[1rem] rounded-xl shadow-xl bg-skiny'>
             <p className='text-title text-txtMainColor font-bold'>Update todo</p>
-            <div className='w-full h-[4rem] rounded-xl shadow-xl overflow-hidden'>
-                {/* 
-                    // Todo: Change default input by Input of react kendo ui
-                */}
-                <input type="text" value={value} onChange={(e) => setValue(e.target.value)} className='w-full h-full text-normalTxt pl-[0.5rem] outline-none border-none' />
-            </div>
+            <TextArea placeholder="Type the text here..." rows={3} className="w-full text-normalTxt resize-y" value={value} onChange={(e) => setValue(e.target.value)} />
+            {/* <input type="text" value={value} onChange={(e) => setValue(e.target.value)} className='w-full h-full text-normalTxt pl-[0.5rem] outline-none border-none' /> */}
             <div className='w-full flex justify-end gap-5 mt-auto'>
                 <button type="submit" className='btn-shape-rounded hover-effect-topleft'
                 >UPDATE</button>
-                <button type="button" onClick={() => callBack()} className='btn-shape-rounded hover-effect-topleft'>CANCEL</button>
+                <button type="button" onClick={() => callBack()} className='btn-error-rounded hover-effect-topleft'>CANCEL</button>
             </div>
         </form>
     )

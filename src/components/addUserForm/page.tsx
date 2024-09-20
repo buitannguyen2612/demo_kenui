@@ -10,7 +10,7 @@ import { IUser } from '../../pages/userManagement/page';
 import CustomButton from '../button/page';
 import { IListUserReponse, IRegisterPayload } from '../../rest/IApi/IAuthentication';
 
-const userNameRegex: RegExp = new RegExp(/[!@#$%^&*(),.?":{}|<>]/)
+const userNameRegex: RegExp = new RegExp(/[A-Z\s\W_]/);
 const upperCaseRegex: RegExp = new RegExp(/[A-Z]/)
 const passwordValidator = (value: string) => {
     const isValid = value?.length > 2 && value?.length < 10

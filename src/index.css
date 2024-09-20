@@ -33,7 +33,7 @@
     }
 
     .btn-error-rounded {
-        @apply text-[0.9rem] text-[#fff] font-bold p-[0.2rem_1rem] bg-[#DD5746] rounded-xl
+        @apply text-[0.9rem] text-[#fff] font-bold p-[0.2rem_1rem] bg-[#fe6358] rounded-xl
     }
 
     .box-primary-gradientcolor {
